@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#064E3B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>SM LangMentor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --emerald-950: #022c22;
+    --emerald-900: #064E3B;
+    --emerald-800: #065f46;
+    --emerald-700: #047857;
+    --emerald-600: #059669;
+    --emerald-100: #d1fae5;
+    --emerald-50: #ecfdf5;
+    --emerald-mint: #f0fdf4;
+    --amber-600: #D97706;
+    --amber-400: #FBBF24;
+    --amber-300: #fcd34d;
+    --amber-100: #fef3c7;
+    --teal-900: #134e4a;
+    --teal-700: #0f766e;
+    --teal-600: #0d9488;
+    --teal-100: #ccfbf1;
+    --teal-50: #f0fdfa;
+    --slate-950: #0F172A;
+    --slate-800: #1e293b;
+    --slate-600: #475569;
+    --slate-400: #94a3b8;
+    --slate-200: #e2e8f0;
+    --slate-100: #f1f5f9;
+    --slate-50: #F8FAFC;
+    --white: #ffffff;
+    --font-display: 'DM Serif Display', Georgia, serif;
+    --font-arabic: 'Scheherazade New', 'Amiri', serif;
+    --font-body: 'DM Sans', sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-xl: 24px;
+    --shadow-sm: 0 1px 3px rgba(6,78,59,0.08), 0 1px 2px rgba(6,78,59,0.04);
+    --shadow-md: 0 4px 16px rgba(6,78,59,0.12), 0 2px 6px rgba(6,78,59,0.06);
+    --shadow-lg: 0 12px 40px rgba(6,78,59,0.16), 0 4px 12px rgba(6,78,59,0.08);
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --lang-color: var(--emerald-900);
+    --lang-accent: var(--amber-400);
+  }
+
+  html, body {
+    height: 100%;
+    font-family: var(--font-body);
+    background: var(--slate-50);
+    color: var(--slate-950);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  /* Arabic font class */
+  .arabic-text {
+    font-family: var(--font-arabic);
+    direction: rtl;
+    line-height: 2.2;
+    font-size: 1.15em;
+  }
+
+  /* ── SCREENS ── */
+  .screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+  }
+
+  /* ══════════════════════════════════════════════
+     SPLASH / SETUP SCREEN
+  ══════════════════════════════════════════════ */
+  #setupScreen {
+    background: var(--slate-50);
+    overflow-y: auto;
+  }
+
+  .setup-hero {
+    background: linear-gradient(160deg, var(--emerald-900) 0%, var(--emerald-800) 60%, var(--emerald-700) 100%);
+    padding: 44px 28px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .setup-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(251,191,36,0.15);
+    border: 1px solid rgba(251,191,36,0.3);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--amber-300);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .hero-badge-dot {
+    width: 6px; height: 6px;
+    background: var(--amber-400);
+    border-radius: 50%;
+    animation: pulse-dot 2s infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.7); }
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-title .sm-prefix { color: rgba(255,255,255,0.9); }
+  .hero-title .ai-badge {
+    display: inline-block;
+    background: var(--amber-400);
+    color: var(--emerald-950);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.05em;
+    vertical-align: middle;
+    margin: 0 4px;
+    font-family: var(--font-body);
+    box-shadow: 0 2px 8px rgba(251,191,36,0.4);
+  }
+  .hero-title .lang-en { color: var(--amber-300); }
+  .hero-title .lang-sep { color: rgba(255,255,255,0.4); font-size: 22px; }
+  .hero-title .lang-ar { color: #86efac; }
+
+  .hero-tagline {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 400;
+    margin-top: 6px;
+    letter-spacing: 0.01em;
+  }
+
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(251,191,36,0.07);
+    pointer-events: none;
+  }
+  .hero-orb-1 { width: 200px; height: 200px; top: -60px; right: -60px; }
+  .hero-orb-2 { width: 120px; height: 120px; bottom: -30px; left: -30px; }
+
+  /* Language Selector Tabs */
+  .lang-tabs {
+    display: flex;
+    gap: 0;
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--slate-200);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .lang-tab {
+    flex: 1;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition);
+    border: none;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+  }
+
+  .lang-tab + .lang-tab { border-left: 1px solid var(--slate-200); }
+
+  .lang-tab.active-en {
+    background: linear-gradient(135deg, var(--emerald-900), var(--emerald-700));
+    color: white;
+  }
+  .lang-tab.active-ar {
+    background: linear-gradient(135deg, var(--teal-900), var(--teal-700));
+    color: white;
+  }
+
+  .lang-tab-emoji { font-size: 20px; }
+  .lang-tab-name { font-size: 13px; font-weight: 600; }
+  .lang-tab-sub { font-size: 11px; opacity: 0.7; }
+  .lang-tab.active-en .lang-tab-sub,
+  .lang-tab.active-ar .lang-tab-sub { opacity: 0.8; }
+  .lang-tab:not(.active-en):not(.active-ar) .lang-tab-name { color: var(--slate-800); }
+  .lang-tab:not(.active-en):not(.active-ar) .lang-tab-sub { color: var(--slate-400); }
+
+  .lang-active-mark {
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 28px; height: 3px;
+    background: var(--amber-400);
+    border-radius: 2px 2px 0 0;
+    opacity: 0;
+  }
+  .lang-tab.active-en .lang-active-mark,
+  .lang-tab.active-ar .lang-active-mark { opacity: 1; }
+
+  /* Setup Form */
+  .setup-body {
+    padding: 24px 20px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .form-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--slate-200);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .form-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--slate-800);
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .form-label-icon {
+    width: 28px; height: 28px;
+    background: var(--emerald-50);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .form-hint {
+    font-size: 12px;
+    color: var(--slate-400);
+    margin-bottom: 10px;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+
+  /* Level Selector */
+  .level-options { display: flex; flex-direction: column; gap: 10px; }
+
+  .level-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--slate-200);
+    cursor: pointer;
+    transition: all var(--transition);
+    background: var(--white);
+    position: relative;
+  }
+
+  .level-option:hover {
+    border-color: var(--emerald-600);
+    background: var(--emerald-mint);
+  }
+
+  .level-option.active {
+    border-color: var(--emerald-700);
+    background: var(--emerald-mint);
+    box-shadow: 0 0 0 3px rgba(5,150,105,0.1);
+  }
+
+  /* Teal style for Arabic mode */
+  .arabic-mode .level-option:hover { border-color: var(--teal-600); background: var(--teal-50); }
+  .arabic-mode .level-option.active { border-color: var(--teal-700); background: var(--teal-50); box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
+  .arabic-mode .level-option.active .level-radio { border-color: var(--teal-700); background: var(--teal-700); }
+  .arabic-mode .start-btn { background: linear-gradient(135deg, var(--teal-900) 0%, var(--teal-700) 100%); }
+
+  .level-icon { font-size: 22px; flex-shrink: 0; line-height: 1; margin-top: 1px; }
+  .level-text { flex: 1; }
+  .level-name { font-size: 14px; font-weight: 600; color: var(--slate-800); margin-bottom: 3px; }
+  .level-desc { font-size: 12px; color: var(--slate-400); line-height: 1.4; }
+
+  .level-radio {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--slate-300);
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition);
+  }
+  .level-option.active .level-radio { border-color: var(--emerald-700); background: var(--emerald-700); }
+  .level-option.active .level-radio::after { content: ''; width: 6px; height: 6px; background: white; border-radius: 50%; }
+
+  /* Start Button */
+  .start-btn {
+    width: 100%;
+    padding: 17px 24px;
+    background: linear-gradient(135deg, var(--emerald-900) 0%, var(--emerald-700) 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-lg);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.15s ease, box-shadow var(--transition);
+    box-shadow: 0 4px 20px rgba(6,78,59,0.35);
+  }
+
+  .start-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(6,78,59,0.45); }
+  .start-btn:active { transform: translateY(1px); }
+  .start-btn-text { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .start-btn-en { font-size: 16px; }
+  .start-btn-ur { font-family: var(--font-arabic); font-size: 14px; opacity: 0.8; }
+  .start-btn-sparkles {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    animation: float-sparkle 3s ease-in-out infinite;
+  }
+  @keyframes float-sparkle {
+    0%, 100% { transform: translateY(-50%) rotate(0deg); opacity: 0.8; }
+    50% { transform: translateY(calc(-50% - 4px)) rotate(10deg); opacity: 1; }
+  }
+
+  /* Settings link */
+  .settings-link {
+    text-align: center;
+    font-size: 12px;
+    color: var(--slate-400);
+    cursor: pointer;
+    padding: 4px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* ══════════════════════════════════════════════
+     CHAT SCREEN
+  ══════════════════════════════════════════════ */
+  #chatScreen {
+    background: var(--slate-50);
+    display: none;
+    flex-direction: column;
+  }
+
+  #chatScreen.active { display: flex; }
+
+  /* Chat Header */
+  .chat-header {
+    background: var(--emerald-900);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 12px rgba(6,78,59,0.25);
+    position: relative;
+    z-index: 10;
+  }
+
+  .chat-header.arabic-header { background: var(--teal-900); }
+
+  .chat-header-back {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background var(--transition);
+  }
+  .chat-header-back:hover { background: rgba(255,255,255,0.18); }
+
+  .chat-header-avatar {
+    width: 36px; height: 36px;
+    background: var(--amber-400);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+
+  .chat-header-info { flex: 1; min-width: 0; }
+  .chat-header-name { font-size: 14px; font-weight: 600; color: white; }
+  .chat-header-level { font-size: 11px; color: rgba(255,255,255,0.6); }
+
+  .chat-header-keys {
+    font-size: 11px;
+    background: rgba(251,191,36,0.2);
+    color: var(--amber-300);
+    padding: 3px 9px;
+    border-radius: 100px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  /* Chat Messages */
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    scroll-behavior: smooth;
+  }
+
+  .chat-messages::-webkit-scrollbar { width: 4px; }
+  .chat-messages::-webkit-scrollbar-track { background: transparent; }
+  .chat-messages::-webkit-scrollbar-thumb { background: var(--slate-200); border-radius: 2px; }
+
+  .chat-divider {
+    text-align: center;
+    font-size: 11px;
+    color: var(--slate-400);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .chat-divider::before, .chat-divider::after { content: ''; flex: 1; height: 1px; background: var(--slate-200); }
+
+  /* Message Bubbles */
+  .msg-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    animation: msg-in 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+  @keyframes msg-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .msg-row.user { flex-direction: row-reverse; }
+
+  .msg-avatar {
+    width: 30px; height: 30px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .msg-avatar.ai { background: var(--emerald-100); }
+  .msg-avatar.ai.arabic-av { background: var(--teal-100); }
+  .msg-avatar.user-av { background: var(--amber-100); }
+
+  .msg-bubble {
+    max-width: 82%;
+    padding: 12px 15px;
+    border-radius: var(--radius-lg);
+    line-height: 1.6;
+    font-size: 14.5px;
+    position: relative;
+  }
+  .msg-row.ai .msg-bubble {
+    background: var(--white);
+    color: var(--slate-800);
+    border: 1px solid var(--slate-200);
+    border-bottom-left-radius: 4px;
+    box-shadow: var(--shadow-sm);
+  }
+  .msg-row.user .msg-bubble {
+    background: var(--emerald-900);
+    color: white;
+    border-bottom-right-radius: 4px;
+  }
+  .arabic-mode .msg-row.user .msg-bubble { background: var(--teal-900); }
+
+  /* Feedback Section */
+  .feedback-block {
+    background: var(--emerald-50);
+    border: 1px solid var(--emerald-100);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+  .arabic-feedback { background: var(--teal-50); border-color: var(--teal-100); }
+
+  .feedback-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--emerald-700);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .arabic-feedback .feedback-label { color: var(--teal-700); }
+
+  .conversation-block { font-size: 14.5px; color: var(--slate-800); line-height: 1.7; }
+
+  /* Arabic conversation block */
+  .arabic-conv { font-family: var(--font-arabic); direction: rtl; font-size: 17px; line-height: 2.3; }
+
+  .vocab-pill {
+    display: inline-block;
+    background: var(--amber-100);
+    color: var(--amber-600);
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 100px;
+    margin: 2px 2px;
+  }
+
+  .msg-time { font-size: 10px; color: var(--slate-400); margin-top: 6px; display: block; }
+  .msg-row.user .msg-time { color: rgba(255,255,255,0.5); }
+
+  /* Typing indicator */
+  .typing-indicator { display: flex; gap: 10px; align-items: flex-end; }
+  .typing-bubble {
+    background: var(--white);
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius-lg);
+    border-bottom-left-radius: 4px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .typing-dot {
+    width: 7px; height: 7px;
+    background: var(--slate-300);
+    border-radius: 50%;
+    animation: typing-bounce 1.4s infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+
+  /* Welcome Card */
+  .welcome-card {
+    background: linear-gradient(135deg, var(--emerald-900), var(--emerald-700));
+    border-radius: var(--radius-xl);
+    padding: 20px 18px;
+    color: white;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+  }
+  .welcome-card.arabic-welcome { background: linear-gradient(135deg, var(--teal-900), var(--teal-700)); }
+  .welcome-card h2 { font-family: var(--font-display); font-size: 20px; margin-bottom: 6px; }
+  .welcome-card .arabic-greeting { font-family: var(--font-arabic); font-size: 22px; display: block; margin-bottom: 4px; }
+  .welcome-card p { font-size: 13px; opacity: 0.8; line-height: 1.6; margin-bottom: 12px; }
+  .starter-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; }
+  .starter-chip {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 100px;
+    padding: 6px 13px;
+    font-size: 12.5px;
+    color: white;
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+  .starter-chip:hover { background: rgba(255,255,255,0.22); }
+  .starter-chip.arabic-chip { font-family: var(--font-arabic); font-size: 14px; padding: 6px 16px; }
+
+  /* Input Bar */
+  .chat-input-bar {
+    background: var(--white);
+    border-top: 1px solid var(--slate-200);
+    padding: 12px 14px;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
+  }
+  .input-wrapper {
+    flex: 1;
+    background: var(--slate-50);
+    border: 1.5px solid var(--slate-200);
+    border-radius: 16px;
+    display: flex;
+    align-items: flex-end;
+    padding: 8px 12px;
+    gap: 8px;
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+  .input-wrapper:focus-within {
+    border-color: var(--emerald-600);
+    box-shadow: 0 0 0 3px rgba(5,150,105,0.1);
+    background: var(--white);
+  }
+  .arabic-mode .input-wrapper:focus-within { border-color: var(--teal-600); box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
+
+  textarea#msgInput {
+    flex: 1;
+    border: none;
+    background: transparent;
+    resize: none;
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    color: var(--slate-800);
+    outline: none;
+    line-height: 1.5;
+    max-height: 100px;
+    overflow-y: auto;
+  }
+  textarea#msgInput::placeholder { color: var(--slate-400); }
+
+  .mic-btn {
+    width: 30px; height: 30px;
+    background: none;
+    border: none;
+    color: var(--slate-400);
+    font-size: 17px;
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: color var(--transition), background var(--transition);
+  }
+  .mic-btn:hover { color: var(--emerald-600); background: var(--emerald-50); }
+  .mic-btn.listening { color: #ef4444; animation: pulse-dot 1s infinite; }
+
+  .send-btn {
+    width: 44px; height: 44px;
+    background: var(--emerald-700);
+    border: none;
+    border-radius: 14px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background var(--transition), transform 0.1s ease;
+    box-shadow: 0 2px 10px rgba(5,150,105,0.3);
+  }
+  .send-btn:hover { background: var(--emerald-900); }
+  .send-btn:active { transform: scale(0.92); }
+  .send-btn:disabled { background: var(--slate-300); box-shadow: none; cursor: not-allowed; }
+  .arabic-mode .send-btn { background: var(--teal-700); }
+  .arabic-mode .send-btn:hover { background: var(--teal-900); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #ef4444;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Scrollbar for setup */
+  #setupScreen::-webkit-scrollbar { width: 4px; }
+  #setupScreen::-webkit-scrollbar-track { background: transparent; }
+  #setupScreen::-webkit-scrollbar-thumb { background: var(--slate-200); border-radius: 2px; }
+
+  /* ══════════════════════════════════════════════
+     SETTINGS / ABOUT MODAL
+  ══════════════════════════════════════════════ */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 500;
+    display: flex;
+    align-items: flex-end;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal-sheet {
+    width: 100%;
+    background: var(--white);
+    border-radius: 24px 24px 0 0;
+    padding: 0 0 32px;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+  .modal-overlay.open .modal-sheet { transform: translateY(0); }
+  .modal-handle {
+    width: 36px; height: 4px;
+    background: var(--slate-200);
+    border-radius: 2px;
+    margin: 12px auto 0;
+  }
+  .modal-header {
+    padding: 16px 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal-title { font-size: 18px; font-weight: 700; color: var(--slate-800); }
+  .modal-close {
+    width: 32px; height: 32px;
+    background: var(--slate-100);
+    border: none;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--slate-600);
+  }
+
+  /* Tab system for modal */
+  .modal-tabs {
+    display: flex;
+    gap: 0;
+    padding: 16px 20px 0;
+    border-bottom: 1px solid var(--slate-200);
+    margin-bottom: 0;
+  }
+  .modal-tab {
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--slate-400);
+    cursor: pointer;
+    border-bottom: 2.5px solid transparent;
+    transition: all var(--transition);
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    margin-bottom: -1px;
+  }
+  .modal-tab.active { color: var(--emerald-700); border-bottom-color: var(--emerald-700); }
+  .modal-tab-panel { display: none; padding: 20px; }
+  .modal-tab-panel.active { display: block; }
+
+  .settings-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  .settings-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--slate-600);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .keys-input-sm {
+    width: 100%;
+    background: var(--slate-50);
+    border: 1.5px solid var(--slate-200);
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--slate-800);
+    resize: vertical;
+    min-height: 80px;
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    line-height: 1.6;
+  }
+  .keys-input-sm:focus { border-color: var(--emerald-600); box-shadow: 0 0 0 3px rgba(5,150,105,0.12); }
+  .key-status-sm {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--slate-400);
+    margin-top: 4px;
+  }
+  .key-count-badge {
+    background: var(--emerald-50);
+    color: var(--emerald-700);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+
+  /* About section */
+  .about-app-banner {
+    background: linear-gradient(135deg, var(--emerald-900), var(--teal-900));
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .about-app-name { font-family: var(--font-display); font-size: 20px; margin-bottom: 4px; }
+  .about-app-name .ai-tag { background: var(--amber-400); color: var(--emerald-950); padding: 1px 6px; border-radius: 4px; font-family: var(--font-body); font-size: 12px; font-weight: 700; vertical-align: middle; margin: 0 3px; }
+  .about-version { font-size: 11px; opacity: 0.6; }
+
+  .feature-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .feature-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: var(--slate-50);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    border: 1px solid var(--slate-200);
+  }
+  .feature-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .feature-name { font-size: 13px; font-weight: 600; color: var(--slate-800); margin-bottom: 2px; }
+  .feature-desc { font-size: 12px; color: var(--slate-400); line-height: 1.4; }
+
+  .dev-card {
+    background: var(--emerald-50);
+    border: 1px solid var(--emerald-100);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+  }
+  .dev-card-title { font-size: 12px; font-weight: 700; color: var(--emerald-700); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+  .dev-name { font-size: 15px; font-weight: 700; color: var(--slate-800); margin-bottom: 2px; }
+  .dev-affil { font-size: 12px; color: var(--slate-500); margin-bottom: 10px; line-height: 1.4; }
+  .dev-contacts { display: flex; flex-direction: column; gap: 6px; }
+  .dev-contact-row { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--slate-600); }
+  .dev-contact-icon { width: 26px; height: 26px; background: var(--emerald-100); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- ════════ SETUP SCREEN ════════ -->
+<div id="setupScreen" class="screen">
+  <div class="setup-hero">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      AI-Powered Language Learning
+    </div>
+    <h1 class="hero-title">
+      <span class="sm-prefix">SM</span>
+      <span class="ai-badge">AI</span>
+      <span class="lang-en">Lang</span><span class="lang-ar">Mentor</span>
+      <br><span style="font-size:15px; color:rgba(255,255,255,0.7); font-family:var(--font-body); font-weight:300;">English &amp; Arabic Language Tutor</span>
+    </h1>
+    <p class="hero-tagline">Beginner to Advanced · 🎙️ Voice Conversation · Quranic Arabic Style</p>
+  </div>
+
+  <div class="setup-body">
+
+    <!-- Language Selector -->
+    <div class="form-card" style="padding:0; overflow:hidden;">
+      <div class="lang-tabs">
+        <button class="lang-tab active-en" id="tabEn" onclick="selectLanguage('english')">
+          <span class="lang-tab-emoji">🇬🇧</span>
+          <span class="lang-tab-name">English</span>
+          <span class="lang-tab-sub">Conversation</span>
+          <span class="lang-active-mark"></span>
+        </button>
+        <button class="lang-tab" id="tabAr" onclick="selectLanguage('arabic')">
+          <span class="lang-tab-emoji">📖</span>
+          <span class="lang-tab-name">العربية</span>
+          <span class="lang-tab-sub">Quranic Style</span>
+          <span class="lang-active-mark"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Level Selector -->
+    <div class="form-card" id="levelCard">
+      <div class="form-label">
+        <div class="form-label-icon">📚</div>
+        Select Your Level
+      </div>
+      <div class="level-options" id="levelOptions">
+        <div class="level-option active" data-level="beginner" onclick="selectLevel(this)">
+          <div class="level-icon">🌱</div>
+          <div class="level-text">
+            <div class="level-name">Beginner</div>
+            <div class="level-desc" id="ldesc-beginner">Simple English + Urdu Translation Support (ابتدائی)</div>
+          </div>
+          <div class="level-radio"></div>
+        </div>
+        <div class="level-option" data-level="intermediate" onclick="selectLevel(this)">
+          <div class="level-icon">🌿</div>
+          <div class="level-text">
+            <div class="level-name">Intermediate</div>
+            <div class="level-desc" id="ldesc-intermediate">Daily Life Conversations (روزمرہ گفتگو)</div>
+          </div>
+          <div class="level-radio"></div>
+        </div>
+        <div class="level-option" data-level="advanced" onclick="selectLevel(this)">
+          <div class="level-icon">🌳</div>
+          <div class="level-text">
+            <div class="level-name">Advanced</div>
+            <div class="level-desc" id="ldesc-advanced">Academic, Scholarly &amp; Dawah Conversations (علمی گفتگو)</div>
+          </div>
+          <div class="level-radio"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Start Button -->
+    <button class="start-btn" id="startBtn" onclick="startChat()">
+      <div class="start-btn-text">
+        <span class="start-btn-en" id="startBtnText">Start English Conversation</span>
+        <span class="start-btn-ur" id="startBtnSub">بات چیت شروع کریں</span>
+      </div>
+      <span class="start-btn-sparkles">✨</span>
+    </button>
+
+    <div class="settings-link" onclick="openModal()">⚙️ Settings &amp; About</div>
+
+  </div>
+</div>
+
+<!-- ════════ CHAT SCREEN ════════ -->
+<div id="chatScreen" class="screen hidden">
+  <div class="chat-header" id="chatHeader">
+    <button class="chat-header-back" onclick="goBack()">←</button>
+    <div class="chat-header-avatar" id="chatAvatar">📖</div>
+    <div class="chat-header-info">
+      <div class="chat-header-name" id="chatHeaderName">SM AI English Tutor</div>
+      <div class="chat-header-level" id="headerLevel">Beginner Mode</div>
+    </div>
+    <div class="chat-header-keys" id="headerKeys">0 Keys</div>
+    <but<button id="ttsToggleBtn" onclick="toggleTTS()" title="آواز میں جواب سنیں" style="width:36px;height:36px;background:rgba(255,255,255,0.1);border:none;border-radius:10px;color:white;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.25s;" onmouseover="this.style.background='rgba(255,255,255,0.22)'" onmouseout="ttsBtnMouseout(this)">🔇</button>
+  </div>
+
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-divider">Today</div>
+    <!-- Welcome card injected by JS -->
+  </div>
+
+  <!-- Speaking indicator -->
+  <div id="speakingBar" style="display:none;background:linear-gradient(90deg,var(--emerald-900),var(--emerald-700));padding:6px 16px;text-align:center;font-size:12px;color:white;align-items:center;justify-content:center;gap:8px;">
+    <span style="animation:pulse-dot 1s infinite;display:inline-block;">🔊</span>
+    <span>AI بول رہا ہے...</span>
+    <button onclick="stopSpeaking()" style="background:rgba(255,255,255,0.2);border:none;border-radius:6px;color:white;font-size:11px;padding:2px 8px;cursor:pointer;margin-left:6px;">⏹ روکیں</button>
+  </div>
+  
+  <div class="chat-input-bar">
+    <!-- Voice Conversation Button -->
+    <button id="voiceConvBtn" onclick="toggleVoiceConversation()" title="آواز میں بات کریں" style="width:44px;height:44px;background:var(--slate-100);border:1.5px solid var(--slate-200);border-radius:14px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.25s;">🎙️</button>
+    <div class="input-wrapper">
+      <textarea id="msgInput" rows="1" placeholder="Type your message here…" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="mic-btn" id="micBtn" title="Voice Input" onclick="toggleMic()">🎤</button>
+    </div>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+  </div>
+</div>
+
+<!-- ════════ SETTINGS / ABOUT MODAL ════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">⚙️ Settings &amp; About</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchModalTab('settings',this)">Settings</button>
+      <button class="modal-tab" onclick="switchModalTab('about',this)">About</button>
+      <button class="modal-tab" onclick="switchModalTab('developer',this)">Developer</button>
+    </div>
+
+    <!-- SETTINGS PANEL -->
+    <div class="modal-tab-panel active" id="panel-settings">
+      <div class="settings-row">
+        <div class="settings-label">🔑 Gemini API Keys</div>
+        <p style="font-size:12px;color:var(--slate-400);margin-bottom:8px;line-height:1.5;">API keys add کریں — ہر key الگ بٹن میں دکھے گی۔ Keys خود بخود rotate ہوتی ہیں۔</p>
+        
+        <!-- Add key input row -->
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <input type="password" id="newKeyInput" placeholder="AIzaSy... نئی key یہاں paste کریں" 
+            style="flex:1;background:var(--slate-50);border:1.5px solid var(--slate-200);border-radius:10px;padding:10px 12px;font-family:monospace;font-size:12px;color:var(--slate-800);outline:none;transition:border-color 0.25s;"
+            onfocus="this.style.borderColor='var(--emerald-600)'" onblur="this.style.borderColor='var(--slate-200)'"
+            onkeydown="if(event.key==='Enter') addApiKey()"/>
+          <button onclick="addApiKey()" style="background:var(--emerald-700);color:white;border:none;border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background 0.2s;" 
+            onmouseover="this.style.background='var(--emerald-900)'" onmouseout="this.style.background='var(--emerald-700)'">+ Add Key</button>
+        </div>
+        
+        <!-- Keys list -->
+        <div id="keysList" style="display:flex;flex-direction:column;gap:6px;min-height:32px;">
+          <p style="font-size:12px;color:var(--slate-400);text-align:center;padding:8px;" id="noKeysMsg">ابھی کوئی key نہیں ہے — اوپر add کریں</p>
+        </div>
+        
+        <div class="key-status-sm" style="margin-top:8px;">
+          <span>Total Keys:</span>
+          <span class="key-count-badge" id="keyCount">0</span>
+          <span style="margin-left:auto;font-size:11px;">🔄 Round-robin rotation active</span>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-label">🌐 Active Language</div>
+        <p style="font-size:12px;color:var(--slate-400);line-height:1.5;">Change language from the home screen Language Selector tabs.</p>
+      </div>
+    </div>
+
+    <!-- ABOUT PANEL -->
+    <div class="modal-tab-panel" id="panel-about">
+      <div class="about-app-banner">
+        <div class="about-app-name">SM <span class="ai-tag">AI</span> LangMentor</div>
+        <div class="about-version">Version 3.0 · Voice Conversations · Pakistani &amp; Madaris Students</div>
+      </div>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon">🎙️</div>
+          <div>
+            <div class="feature-name">Voice Conversation Mode</div>
+            <div class="feature-desc">AI آواز میں جواب دیتا ہے — صرف 🎙️ بٹن دبائیں اور بولنا شروع کریں۔ Pronunciation اور listening دونوں سیکھیں۔</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🇬🇧</div>
+          <div>
+            <div class="feature-name">English Conversation Tutor</div>
+            <div class="feature-desc">Beginner to Advanced level English conversation with smart grammar feedback, vocabulary boost, and Urdu translation support.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">📖</div>
+          <div>
+            <div class="feature-name">Quranic Arabic Tutor</div>
+            <div class="feature-desc">Learn Classical &amp; Quranic Arabic — not Modern Standard Arabic — covering grammar (Nahw &amp; Sarf), Quranic vocabulary, and Islamic text comprehension. Rendered in Scheherazade Uthmani-style font.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">✨</div>
+          <div>
+            <div class="feature-name">Smart Feedback Engine</div>
+            <div class="feature-desc">Every response includes a dedicated feedback block analyzing your errors, offering corrections, and suggesting better vocabulary alternatives.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🎤</div>
+          <div>
+            <div class="feature-name">Voice Input (Speech-to-Text)</div>
+            <div class="feature-desc">Tap the microphone to speak your message. Supports both English and Arabic voice recognition.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🔑</div>
+          <div>
+            <div class="feature-name">Multi-Key Round-Robin</div>
+            <div class="feature-desc">Add multiple Gemini API keys — the app rotates them automatically to avoid rate limits and ensure uninterrupted sessions.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">📶</div>
+          <div>
+            <div class="feature-name">Offline-Ready &amp; Self-Contained</div>
+            <div class="feature-desc">Single HTML file — no installation required. Works on any device with a browser. API keys stored locally.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🎓</div>
+          <div>
+            <div class="feature-name">Madaris-Focused Content</div>
+            <div class="feature-desc">Designed for Islamic seminary students — topics include Fiqh, Hadith, Dawah, Islamic ethics, and classical Arabic scholarship.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEVELOPER PANEL -->
+    <div class="modal-tab-panel" id="panel-developer">
+      <div class="dev-card">
+        <div class="dev-card-title">👨‍💻 Developer Information</div>
+        <div class="dev-name">Dr. Sajid Mahmood</div>
+        <div class="dev-affil">Department of Islamic &amp; Religious Studies<br>Hazara University Mansehra, KPK, Pakistan</div>
+        <div class="dev-contacts">
+          <div class="dev-contact-row">
+            <div class="dev-contact-icon">📧</div>
+            <span>sajidzbi@gmail.com</span>
+          </div>
+          <div class="dev-contact-row">
+            <div class="dev-contact-icon">📱</div>
+            <span>WhatsApp: 03009080730</span>
+          </div>
+          <div class="dev-contact-row">
+            <div class="dev-contact-icon">🏛️</div>
+            <span>Hazara University, Mansehra</span>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--slate-400);margin-top:16px;line-height:1.6;text-align:center;">This application is developed for academic and community use. For collaboration, feedback, or institutional licensing, please contact the developer.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ──
+const STATE = {
+  ttsEnabled: false,
+  isVoiceConvMode: false,
+  currentUtterance: null,
+  apiKeys: [],
+  currentKeyIndex: 0,
+  level: 'beginner',
+  language: 'english', // 'english' | 'arabic'
+  history: [],
+  isLoading: false,
+  recognition: null,
+  isListening: false
+};
+
+const LEVELS = {
+  beginner: 'Beginner Mode',
+  intermediate: 'Intermediate Mode',
+  advanced: 'Advanced Mode'
+};
+
+// ── SYSTEM PROMPTS ──
+const SYSTEM_PROMPT_ENGLISH = `You are "SM AI English Tutor", an exceptionally patient, encouraging, and expert English language instructor designed for students of Madaris (Islamic seminaries) and general Pakistani students. Your primary mission is to help them overcome conversational hesitation, correct their grammar, boost their vocabulary, and enable them to communicate effectively in English.
+
+Structure every interaction into two distinct parts:
+1. [SMART FEEDBACK]: Analyze the student's previous message. If there are grammatical errors, spelling mistakes, or poor sentence structures, gently provide the corrected version. Suggest 1-2 better vocabulary alternatives (Vocabulary Boost). If their English is excellent, briefly praise them. Keep this feedback in clear, simple English.
+2. [CONVERSATION & QUESTION]: Respond to the context of their message naturally, then ask ONE relevant follow-up question to keep the conversation flowing.
+
+OPERATIONAL GUIDELINES:
+- TONE: Highly respectful, encouraging, academic, and tailored to a religious student's psychology.
+- ADAPTIVE CONTEXT: For lower levels: Use shorter sentences, basic vocabulary, and provide Urdu meanings in brackets for complex words. For advanced levels: Engage in scholarly and Dawah-oriented discussions.
+- EFFICIENCY: Keep responses concise to save tokens.
+- NOTE: The history provided to you is pruned to save tokens. Reply based on the available active turns.
+
+Output format should clearly separate [SMART FEEDBACK] and [CONVERSATION & QUESTION] on separate lines. Never break character.`;
+
+const SYSTEM_PROMPT_ARABIC = `أنت "معلّم العربية الذكي"، مدرّس لغة عربية صبور ومتميّز، متخصص في تعليم العربية الفصحى القرآنية الكلاسيكية — لا العربية العامية ولا العربية المعاصرة — للطلاب الباكستانيين وطلاب المدارس الإسلامية.
+
+هدفك الأساسي: مساعدة المتعلمين على فهم واستيعاب العربية القرآنية التي جاء بها القرآن الكريم والسنة النبوية، والتحدث بها والكتابة فيها.
+
+هيكل كل تفاعل:
+1. [تقييم ذكي]: حلّل رسالة المتعلم. إن وُجدت أخطاء نحوية أو صرفية أو أسلوبية، قدّم التصحيح بلطف مع الشرح الموجز. اقترح مفردة قرآنية بديلة أو أفضل (تعزيز المفردات). إن كانت الإجابة صحيحة فأثنِ عليها.
+2. [المحادثة والسؤال]: تفاعل مع محتوى رسالته بشكل طبيعي، ثم اطرح سؤالاً واحداً لمتابعة الحوار.
+
+قواعد التشغيل:
+- الأسلوب: استخدم الفصحى الكلاسيكية القرآنية في جميع ردودك. تجنّب العامية والمصطلحات الحديثة.
+- للمستوى الابتدائي: استخدم جملاً قصيرة، واشرح المفردات الصعبة بين قوسين باللغة الإنجليزية أو الأردية.
+- للمستوى المتقدم: ناقش مسائل النحو والصرف والبلاغة والتفسير القرآني.
+- اكتب ردودك بخط واضح مناسب للقرآن الكريم.
+- الكفاءة: أجوبة موجزة ومركّزة.
+- NOTE: History is pruned. Reply based on available turns.
+
+افصل [تقييم ذكي] و[المحادثة والسؤال] على سطرين منفصلين. لا تخرج عن دورك أبداً.`;
+
+// ── INIT ──
+window.onload = () => {
+  const saved = localStorage.getItem('sm_tutor_keys');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) STATE.apiKeys = parsed;
+      else if (typeof parsed === 'string') {
+        // legacy comma-separated
+        STATE.apiKeys = parsed.split(',').map(k=>k.trim()).filter(k=>k.length>10);
+      }
+    } catch(e) {
+      // legacy plain string
+      const keys = saved.split(',').map(k=>k.trim()).filter(k=>k.length>10);
+      STATE.apiKeys = keys;
+    }
+    renderKeysList();
+    updateKeyCount();
+  }
+  const savedLevel = localStorage.getItem('sm_tutor_level');
+  if (savedLevel) selectLevel(document.querySelector(`[data-level="${savedLevel}"]`));
+
+  const savedLang = localStorage.getItem('sm_tutor_lang');
+  if (savedLang) selectLanguage(savedLang, true);
+
+  // Keys managed via addApiKey/removeApiKey
+
+  initSpeech();
+};
+
+function updateKeyCount() {
+  document.getElementById('keyCount').textContent = STATE.apiKeys.length;
+  const noMsg = document.getElementById('noKeysMsg');
+  if (noMsg) noMsg.style.display = STATE.apiKeys.length === 0 ? 'block' : 'none';
+}
+
+function addApiKey() {
+  const input = document.getElementById('newKeyInput');
+  const val = input.value.trim();
+  if (!val || val.length < 10) { showToast('Valid API key درج کریں (کم از کم 10 حروف)'); return; }
+  if (STATE.apiKeys.includes(val)) { showToast('یہ key پہلے سے موجود ہے'); input.value=''; return; }
+  STATE.apiKeys.push(val);
+  saveKeys();
+  input.value = '';
+  renderKeysList();
+  updateKeyCount();
+  showToast('✅ Key #' + STATE.apiKeys.length + ' add ہو گئی!');
+}
+
+function removeApiKey(idx) {
+  STATE.apiKeys.splice(idx, 1);
+  saveKeys();
+  renderKeysList();
+  updateKeyCount();
+}
+
+function saveKeys() {
+  localStorage.setItem('sm_tutor_keys', JSON.stringify(STATE.apiKeys));
+}
+
+function renderKeysList() {
+  const list = document.getElementById('keysList');
+  const noMsg = document.getElementById('noKeysMsg');
+  // Clear existing key items (keep noKeysMsg)
+  Array.from(list.children).forEach(c => { if (c.id !== 'noKeysMsg') c.remove(); });
+  
+  STATE.apiKeys.forEach((key, i) => {
+    const masked = key.substring(0, 8) + '••••••••' + key.slice(-4);
+    const div = document.createElement('div');
+    div.style.cssText = 'display:flex;align-items:center;gap:8px;background:var(--slate-50);border:1px solid var(--slate-200);border-radius:10px;padding:9px 12px;';
+    div.innerHTML =
+      '<div style="width:24px;height:24px;background:var(--emerald-100);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--emerald-700);flex-shrink:0;">' + (i+1) + '</div>' +
+      '<div style="flex:1;font-family:monospace;font-size:12px;color:var(--slate-700);">' + masked + '</div>' +
+      '<button onclick="removeApiKey(' + i + ')" style="background:none;border:none;color:#ef4444;font-size:16px;cursor:pointer;padding:2px 4px;border-radius:6px;" title="Remove">✕</button>';
+    list.appendChild(div);
+  });
+  
+  if (noMsg) noMsg.style.display = STATE.apiKeys.length === 0 ? 'block' : 'none';
+}
+
+function selectLevel(el) {
+  if (!el) return;
+  document.querySelectorAll('.level-option').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+  STATE.level = el.dataset.level;
+  localStorage.setItem('sm_tutor_level', STATE.level);
+}
+
+function selectLanguage(lang, silent) {
+  STATE.language = lang;
+  if (!silent) localStorage.setItem('sm_tutor_lang', lang);
+
+  const tabEn = document.getElementById('tabEn');
+  const tabAr = document.getElementById('tabAr');
+  const levelCard = document.getElementById('levelCard');
+  const startBtn = document.getElementById('startBtn');
+  const startBtnText = document.getElementById('startBtnText');
+  const startBtnSub = document.getElementById('startBtnSub');
+
+  if (lang === 'arabic') {
+    tabEn.className = 'lang-tab';
+    tabAr.className = 'lang-tab active-ar';
+    levelCard.classList.add('arabic-mode');
+    startBtn.style.background = 'linear-gradient(135deg, #134e4a 0%, #0f766e 100%)';
+    startBtnText.innerHTML = '<span class="start-btn-en">Start Arabic Conversation</span>';
+    startBtnSub.textContent = 'ابدأ المحادثة العربية';
+    // Update level descriptions to Arabic
+    document.getElementById('ldesc-beginner').textContent = 'Basic Quranic vocab + English/Urdu help (مبتدئ)';
+    document.getElementById('ldesc-intermediate').textContent = 'Nahw, Sarf & daily Quranic phrases (متوسط)';
+    document.getElementById('ldesc-advanced').textContent = 'Tafsir, Hadith analysis & classical texts (متقدم)';
+  } else {
+    tabEn.className = 'lang-tab active-en';
+    tabAr.className = 'lang-tab';
+    levelCard.classList.remove('arabic-mode');
+    startBtn.style.background = '';
+    startBtnText.innerHTML = '<span class="start-btn-en">Start English Conversation</span>';
+    startBtnSub.textContent = 'بات چیت شروع کریں';
+    document.getElementById('ldesc-beginner').textContent = 'Simple English + Urdu Translation Support (ابتدائی)';
+    document.getElementById('ldesc-intermediate').textContent = 'Daily Life Conversations (روزمرہ گفتگو)';
+    document.getElementById('ldesc-advanced').textContent = 'Academic, Scholarly & Dawah Conversations (علمی گفتگو)';
+  }
+}
+
+function startChat() {
+  updateKeyCount();
+  if (STATE.apiKeys.length === 0) {
+    showToast('Please enter at least one Gemini API key in Settings.');
+    openModal();
+    return;
+  }
+  STATE.history = [];
+
+  const isArabic = STATE.language === 'arabic';
+  const header = document.getElementById('chatHeader');
+  const avatar = document.getElementById('chatAvatar');
+  const name = document.getElementById('chatHeaderName');
+
+  if (isArabic) {
+    header.classList.add('arabic-header');
+    avatar.textContent = '📖';
+    name.textContent = 'SM AI Arabic Tutor · معلم العربية';
+  } else {
+    header.classList.remove('arabic-header');
+    avatar.textContent = '📖';
+    name.textContent = 'SM AI English Tutor';
+  }
+
+  document.getElementById('headerLevel').textContent = LEVELS[STATE.level] + (isArabic ? ' · عربي' : '');
+  document.getElementById('headerKeys').textContent = `${STATE.apiKeys.length} Key${STATE.apiKeys.length > 1 ? 's' : ''}`;
+
+  // Build welcome card
+  const msgs = document.getElementById('chatMessages');
+  msgs.innerHTML = '<div class="chat-divider">Today</div>';
+
+  const wCard = document.createElement('div');
+  if (isArabic) {
+    wCard.className = 'welcome-card arabic-welcome';
+    wCard.innerHTML = `
+      <h2><span class="arabic-greeting">السلام عليكم ورحمة الله! 🌙</span></h2>
+      <p>I am your personal Quranic Arabic tutor. I will teach you Classical Arabic — the language of the Holy Quran and Hadith. Start with a greeting or try one of these:</p>
+      <div class="starter-chips">
+        <div class="starter-chip arabic-chip" onclick="sendStarter(this)">بسم الله</div>
+        <div class="starter-chip arabic-chip" onclick="sendStarter(this)">ما هو النحو؟</div>
+        <div class="starter-chip arabic-chip" onclick="sendStarter(this)">علّمني الضمائر</div>
+        <div class="starter-chip" onclick="sendStarter(this)">What is i'rab?</div>
+      </div>`;
+  } else {
+    wCard.className = 'welcome-card';
+    wCard.innerHTML = `
+      <h2>Assalamu Alaikum! 👋</h2>
+      <p>I'm your personal English tutor. I'll give you smart feedback on every message and keep our conversation flowing. Start with a greeting or try one of these:</p>
+      <div class="starter-chips">
+        <div class="starter-chip" onclick="sendStarter(this)">Introduce yourself</div>
+        <div class="starter-chip" onclick="sendStarter(this)">Tell me about Islam</div>
+        <div class="starter-chip" onclick="sendStarter(this)">My daily routine</div>
+        <div class="starter-chip" onclick="sendStarter(this)">What is Fiqh?</div>
+      </div>`;
+  }
+  msgs.appendChild(wCard);
+
+  // Update input placeholder
+  document.getElementById('msgInput').placeholder = isArabic ? 'اكتب رسالتك هنا...' : 'Type your message here…';
+  document.getElementById('msgInput').dir = isArabic ? 'rtl' : 'ltr';
+  document.getElementById('msgInput').style.fontFamily = isArabic ? 'var(--font-arabic)' : 'var(--font-body)';
+
+  // Update send button and input bar class
+  const inputBar = document.querySelector('.chat-input-bar');
+  const chatBody = document.getElementById('chatScreen');
+  if (isArabic) {
+    inputBar.classList.add('arabic-mode');
+    chatBody.classList.add('arabic-mode');
+  } else {
+    inputBar.classList.remove('arabic-mode');
+    chatBody.classList.remove('arabic-mode');
+  }
+
+  document.getElementById('setupScreen').classList.add('hidden');
+  const chat = document.getElementById('chatScreen');
+  chat.classList.remove('hidden');
+  chat.style.display = 'flex';
+  setTimeout(() => document.getElementById('msgInput').focus(), 400);
+}
+
+function goBack() {
+  document.getElementById('chatScreen').classList.add('hidden');
+  document.getElementById('setupScreen').classList.remove('hidden');
+  stopMic();
+}
+
+// ── MESSAGING ──
+function getNextKey() {
+  const key = STATE.apiKeys[STATE.currentKeyIndex % STATE.apiKeys.length];
+  STATE.currentKeyIndex++;
+  return key;
+}
+
+function getPrunedHistory() { return STATE.history.slice(-8); }
+
+async function sendMessage(text = null) {
+  if (STATE.isLoading) return;
+  const input = document.getElementById('msgInput');
+  const msg = text || input.value.trim();
+  if (!msg) return;
+
+  input.value = '';
+  autoResize(input);
+  addUserBubble(msg);
+
+  const isArabic = STATE.language === 'arabic';
+  STATE.history.push({ role: 'user', content: `[Level: ${STATE.level}] ${msg}` });
+  showTyping();
+  STATE.isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  const apiKey = getNextKey();
+  const sysPrompt = (isArabic ? SYSTEM_PROMPT_ARABIC : SYSTEM_PROMPT_ENGLISH)
+    + `\n\nCurrent student level: ${STATE.level.toUpperCase()}.`;
+
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: sysPrompt }] },
+        contents: getPrunedHistory().map(h => ({
+          role: h.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: h.content }]
+        })),
+        generationConfig: { temperature: 0.7, maxOutputTokens: 700 }
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error?.message || `API error ${res.status}`);
+    }
+
+    const data = await res.json();
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not generate a response.';
+    STATE.history.push({ role: 'assistant', content: reply });
+    removeTyping();
+    addAIBubble(reply);
+    speakText(reply);
+  } catch (err) {
+    removeTyping();
+    showToast('Error: ' + err.message.substring(0, 60));
+    console.error(err);
+  } finally {
+    STATE.isLoading = false;
+    document.getElementById('sendBtn').disabled = false;
+  }
+}
+
+function sendStarter(el) { sendMessage(el.textContent.trim()); }
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(ta) {
+  ta.style.height = 'auto';
+  ta.style.height = Math.min(ta.scrollHeight, 100) + 'px';
+}
+
+// ── RENDER ──
+function getTime() {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function addUserBubble(text) {
+  const msgs = document.getElementById('chatMessages');
+  const row = document.createElement('div');
+  row.className = 'msg-row user';
+  const isArabic = STATE.language === 'arabic';
+  row.innerHTML = `
+    <div class="msg-avatar user-av">🧑‍🎓</div>
+    <div class="msg-bubble" style="${isArabic ? 'direction:rtl;font-family:var(--font-arabic);font-size:16px;line-height:2;' : ''}">
+      ${escapeHtml(text)}
+      <div class="msg-time">${getTime()}</div>
+    </div>`;
+  msgs.appendChild(row);
+  scrollBottom();
+}
+
+function parseAIResponse(text) {
+  let feedback = '', conversation = text;
+  // Support both English and Arabic section markers
+  const fbMatch = text.match(/\[(SMART FEEDBACK|تقييم ذكي)\]([\s\S]*?)(?=\[(CONVERSATION|المحادثة)|$)/i);
+  const cvMatch = text.match(/\[(CONVERSATION[^\]]*|المحادثة[^\]]*)\]([\s\S]*?)$/i);
+
+  if (fbMatch) feedback = fbMatch[2].trim();
+  if (cvMatch) conversation = cvMatch[2].trim();
+  else if (fbMatch) conversation = text.replace(fbMatch[0], '').trim();
+
+  return { feedback, conversation };
+}
+
+function formatFeedback(text) {
+  return text.replace(/[""]([^""]+)[""]/g, '<span class="vocab-pill">$1</span>');
+}
+
+function addAIBubble(text) {
+  const msgs = document.getElementById('chatMessages');
+  const { feedback, conversation } = parseAIResponse(text);
+  const isArabic = STATE.language === 'arabic';
+  const row = document.createElement('div');
+  row.className = 'msg-row ai';
+
+  let inner = '';
+  if (feedback) {
+    const fbLabel = isArabic ? '✨ تقييم ذكي' : '✨ Smart Feedback';
+    inner += `<div class="feedback-block ${isArabic ? 'arabic-feedback' : ''}">
+      <div class="feedback-label">${fbLabel}</div>
+      <div class="${isArabic ? 'arabic-text' : ''}">${formatFeedback(escapeHtml(feedback))}</div>
+    </div>`;
+  }
+  inner += `<div class="conversation-block ${isArabic ? 'arabic-conv' : ''}">${formatText(conversation)}</div>`;
+  inner += `<div class="msg-time">${getTime()} · Key #${((STATE.currentKeyIndex - 1) % STATE.apiKeys.length) + 1}</div>`;
+
+  row.innerHTML = `
+    <div class="msg-avatar ai ${isArabic ? 'arabic-av' : ''}">🤖</div>
+    <div class="msg-bubble">${inner}</div>`;
+  msgs.appendChild(row);
+  scrollBottom();
+}
+
+function formatText(text) {
+  return escapeHtml(text)
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br>');
+}
+
+function escapeHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showTyping() {
+  const msgs = document.getElementById('chatMessages');
+  const el = document.createElement('div');
+  el.id = 'typingIndicator';
+  el.className = 'typing-indicator';
+  el.innerHTML = `
+    <div class="msg-avatar ai">🤖</div>
+    <div class="typing-bubble">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>`;
+  msgs.appendChild(el);
+  scrollBottom();
+}
+
+function removeTyping() {
+  const el = document.getElementById('typingIndicator');
+  if (el) el.remove();
+}
+
+function scrollBottom() {
+  const msgs = document.getElementById('chatMessages');
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ── MODAL ──
+function openModal() {
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+function switchModalTab(name, btn) {
+  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.modal-tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+// ── VOICE INPUT ──
+function initSpeech() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    document.getElementById('micBtn').style.display = 'none';
+    return;
+  }
+  const recog = new SpeechRecognition();
+  recog.continuous = false;
+  recog.interimResults = false;
+
+  recog.onresult = (e) => {
+    const transcript = e.results[0][0].transcript;
+    const inp = document.getElementById('msgInput');
+    inp.value = transcript;
+    autoResize(inp);
+    stopMicUI();
+    // In voice conversation mode, auto-send
+    if (STATE.isVoiceConvMode && transcript.trim()) {
+      setTimeout(() => sendMessage(), 300);
+    }
+  };
+  recog.onerror = () => stopMicUI();
+  recog.onend = () => stopMicUI();
+  STATE.recognition = recog;
+}
+
+function toggleMic() {
+  if (!STATE.recognition) { showToast('Voice input not supported on this browser.'); return; }
+  if (STATE.isListening) {
+    STATE.recognition.stop();
+    stopMicUI();
+  } else {
+    STATE.recognition.lang = STATE.language === 'arabic' ? 'ar-SA' : 'en-US';
+    STATE.recognition.start();
+    STATE.isListening = true;
+    document.getElementById('micBtn').classList.add('listening');
+    document.getElementById('micBtn').title = 'Listening… tap to stop';
+  }
+}
+
+function stopMic() {
+  if (STATE.recognition && STATE.isListening) STATE.recognition.stop();
+  stopMicUI();
+}
+
+function stopMicUI() {
+  STATE.isListening = false;
+  const btn = document.getElementById('micBtn');
+  if (btn) { btn.classList.remove('listening'); btn.title = 'Voice Input'; }
+}
+
+// ── TEXT TO SPEECH (TTS) ──
+
+function ttsBtnMouseout(btn) {
+  btn.style.background = STATE.ttsEnabled ? 'rgba(251,191,36,0.25)' : 'rgba(255,255,255,0.1)';
+}
+function toggleTTS() {
+  STATE.ttsEnabled = !STATE.ttsEnabled;
+  const btn = document.getElementById('ttsToggleBtn');
+  if (STATE.ttsEnabled) {
+    btn.textContent = '🔊';
+    btn.style.background = 'rgba(251,191,36,0.25)';
+    btn.style.border = '1px solid rgba(251,191,36,0.4)';
+    showToast('🔊 آواز میں جواب چالو ہو گیا');
+  } else {
+    btn.textContent = '🔇';
+    btn.style.background = 'rgba(255,255,255,0.1)';
+    btn.style.border = 'none';
+    stopSpeaking();
+    showToast('🔇 آواز بند ہو گئی');
+  }
+}
+
+function speakText(text) {
+  if (!STATE.ttsEnabled) return;
+  if (!window.speechSynthesis) return;
+  stopSpeaking();
+  
+  // Clean text: remove markdown, feedback markers
+  const clean = text
+    .replace(/\[SMART FEEDBACK\].*?(?=\[CONVERSATION|$)/is, '')
+    .replace(/\[تقييم ذكي\].*?(?=\[المحادثة|$)/is, '')
+    .replace(/\[CONVERSATION[^\]]*\]/gi, '')
+    .replace(/\[المحادثة[^\]]*\]/gi, '')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .trim();
+  
+  if (!clean) return;
+  
+  const utter = new SpeechSynthesisUtterance(clean);
+  utter.lang = STATE.language === 'arabic' ? 'ar-SA' : 'en-US';
+  utter.rate = 0.9;
+  utter.pitch = 1.0;
+  utter.volume = 1.0;
+  
+  // Pick best available voice
+  const voices = window.speechSynthesis.getVoices();
+  const langVoices = voices.filter(v => v.lang.startsWith(STATE.language === 'arabic' ? 'ar' : 'en'));
+  if (langVoices.length > 0) utter.voice = langVoices[0];
+  
+  STATE.currentUtterance = utter;
+  const bar = document.getElementById('speakingBar');
+  bar.style.display = 'flex';
+  
+  utter.onend = () => { 
+    bar.style.display = 'none';
+    STATE.currentUtterance = null;
+    // If voice conversation mode, re-start mic after AI speaks
+    if (STATE.isVoiceConvMode && !STATE.isListening) {
+      setTimeout(() => { if (STATE.isVoiceConvMode) startVoiceMic(); }, 600);
+    }
+  };
+  utter.onerror = () => { bar.style.display = 'none'; STATE.currentUtterance = null; };
+  
+  window.speechSynthesis.speak(utter);
+}
+
+function stopSpeaking() {
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  const bar = document.getElementById('speakingBar');
+  if (bar) bar.style.display = 'none';
+  STATE.currentUtterance = null;
+}
+
+// ── VOICE CONVERSATION MODE ──
+function toggleVoiceConversation() {
+  STATE.isVoiceConvMode = !STATE.isVoiceConvMode;
+  const btn = document.getElementById('voiceConvBtn');
+  
+  if (STATE.isVoiceConvMode) {
+    // Auto-enable TTS when voice conv starts
+    if (!STATE.ttsEnabled) {
+      STATE.ttsEnabled = true;
+      const ttsBtn = document.getElementById('ttsToggleBtn');
+      ttsBtn.textContent = '🔊';
+      ttsBtn.style.background = 'rgba(251,191,36,0.25)';
+      ttsBtn.style.border = '1px solid rgba(251,191,36,0.4)';
+    }
+    btn.style.background = '#ef4444';
+    btn.style.border = '1.5px solid #dc2626';
+    btn.style.color = 'white';
+    btn.title = 'آواز والی بات چیت بند کریں';
+    btn.innerHTML = '🛑';
+    showToast('🎙️ آواز والی بات چیت شروع — بولنا شروع کریں');
+    startVoiceMic();
+  } else {
+    btn.style.background = 'var(--slate-100)';
+    btn.style.border = '1.5px solid var(--slate-200)';
+    btn.style.color = '';
+    btn.innerHTML = '🎙️';
+    btn.title = 'آواز میں بات کریں';
+    stopMic();
+    stopSpeaking();
+    showToast('آواز والی بات چیت بند');
+  }
+}
+
+function startVoiceMic() {
+  if (!STATE.recognition || !STATE.isVoiceConvMode) return;
+  if (STATE.isListening || STATE.isLoading) return;
+  STATE.recognition.lang = STATE.language === 'arabic' ? 'ar-SA' : 'en-US';
+  try {
+    STATE.recognition.start();
+    STATE.isListening = true;
+    const micBtn = document.getElementById('micBtn');
+    if (micBtn) { micBtn.classList.add('listening'); micBtn.title = 'سن رہا ہے...'; }
+  } catch(e) {}
+}
+</script>
+</body>
+</html>
