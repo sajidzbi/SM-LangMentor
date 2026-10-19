@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#064E3B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LangMentor">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>SM LangMentor Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --em-950:#022c22;--em-900:#064E3B;--em-800:#065f46;--em-700:#047857;--em-600:#059669;--em-100:#d1fae5;--em-50:#ecfdf5;--em-mint:#f0fdf4;
+  --am-600:#D97706;--am-400:#FBBF24;--am-300:#fcd34d;--am-100:#fef3c7;
+  --tl-900:#134e4a;--tl-700:#0f766e;--tl-600:#0d9488;--tl-100:#ccfbf1;--tl-50:#f0fdfa;
+  --pr-900:#4c1d95;--pr-700:#6d28d9;--pr-600:#7c3aed;--pr-100:#ede9fe;--pr-50:#f5f3ff;
+  --sl-950:#0F172A;--sl-800:#1e293b;--sl-600:#475569;--sl-400:#94a3b8;--sl-200:#e2e8f0;--sl-100:#f1f5f9;--sl-50:#F8FAFC;
+  --white:#ffffff;
+  --font-display:'DM Serif Display',Georgia,serif;
+  --font-arabic:'Scheherazade New','Amiri',serif;
+  --font-body:'DM Sans',sans-serif;
+  --r-sm:8px;--r-md:12px;--r-lg:18px;--r-xl:24px;
+  --sh-sm:0 1px 3px rgba(6,78,59,.08),0 1px 2px rgba(6,78,59,.04);
+  --sh-md:0 4px 16px rgba(6,78,59,.12),0 2px 6px rgba(6,78,59,.06);
+  --sh-lg:0 12px 40px rgba(6,78,59,.16),0 4px 12px rgba(6,78,59,.08);
+  --tr:.25s cubic-bezier(.4,0,.2,1);
+}
+html,body{height:100%;font-family:var(--font-body);background:var(--sl-50);color:var(--sl-950);-webkit-font-smoothing:antialiased;overflow:hidden;}
+.arabic-text{font-family:var(--font-arabic);direction:rtl;line-height:2.2;font-size:1.15em;}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;transition:opacity .4s ease,transform .4s cubic-bezier(.4,0,.2,1);}
+.screen.hidden{opacity:0;pointer-events:none;transform:translateY(20px);}
+
+/* ── SETUP ── */
+#setupScreen{background:var(--sl-50);overflow-y:auto;}
+.setup-hero{background:linear-gradient(160deg,var(--em-900) 0%,var(--em-800) 60%,var(--em-700) 100%);padding:40px 28px 32px;text-align:center;position:relative;overflow:hidden;flex-shrink:0;}
+.setup-hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:500;color:var(--am-300);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;}
+.hero-badge-dot{width:6px;height:6px;background:var(--am-400);border-radius:50%;animation:pulse-dot 2s infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.7);}}
+.hero-title{font-family:var(--font-display);font-size:26px;color:var(--white);line-height:1.2;margin-bottom:4px;letter-spacing:-.02em;}
+.hero-title .ai-badge{display:inline-block;background:var(--am-400);color:var(--em-950);font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px;letter-spacing:.05em;vertical-align:middle;margin:0 4px;font-family:var(--font-body);}
+.hero-tagline{font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;}
+.hero-orb{position:absolute;border-radius:50%;background:rgba(251,191,36,.07);pointer-events:none;}
+.hero-orb-1{width:180px;height:180px;top:-50px;right:-50px;}
+.hero-orb-2{width:100px;height:100px;bottom:-25px;left:-25px;}
+
+/* Lang tabs */
+.lang-tabs{display:flex;background:var(--white);border-radius:var(--r-lg);border:1px solid var(--sl-200);overflow:hidden;box-shadow:var(--sh-sm);}
+.lang-tab{flex:1;padding:12px 8px;text-align:center;cursor:pointer;transition:all var(--tr);border:none;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;}
+.lang-tab+.lang-tab{border-left:1px solid var(--sl-200);}
+.lang-tab.active-en{background:linear-gradient(135deg,var(--em-900),var(--em-700));color:white;}
+.lang-tab.active-ar{background:linear-gradient(135deg,var(--tl-900),var(--tl-700));color:white;}
+.lang-tab.active-fa{background:linear-gradient(135deg,var(--pr-900),var(--pr-700));color:white;}
+.lang-tab-emoji{font-size:18px;}
+.lang-tab-name{font-size:12px;font-weight:600;}
+.lang-tab-sub{font-size:10px;opacity:.7;}
+.lang-tab:not(.active-en):not(.active-ar):not(.active-fa) .lang-tab-name{color:var(--sl-800);}
+.lang-tab:not(.active-en):not(.active-ar):not(.active-fa) .lang-tab-sub{color:var(--sl-400);}
+.lang-active-mark{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:24px;height:3px;background:var(--am-400);border-radius:2px 2px 0 0;opacity:0;}
+.lang-tab.active-en .lang-active-mark,.lang-tab.active-ar .lang-active-mark,.lang-tab.active-fa .lang-active-mark{opacity:1;}
+
+/* Setup body */
+.setup-body{padding:20px 18px 40px;display:flex;flex-direction:column;gap:16px;}
+.form-card{background:var(--white);border-radius:var(--r-lg);border:1px solid var(--sl-200);padding:18px;box-shadow:var(--sh-sm);}
+.form-label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--sl-800);margin-bottom:10px;letter-spacing:.02em;text-transform:uppercase;}
+.form-label-icon{width:26px;height:26px;background:var(--em-50);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.form-hint{font-size:11px;color:var(--sl-400);margin-bottom:8px;line-height:1.5;}
+.level-options{display:flex;flex-direction:column;gap:8px;}
+.level-option{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:var(--r-md);border:1.5px solid var(--sl-200);cursor:pointer;transition:all var(--tr);background:var(--white);position:relative;}
+.level-option:hover{border-color:var(--em-600);background:var(--em-mint);}
+.level-option.active{border-color:var(--em-700);background:var(--em-mint);box-shadow:0 0 0 3px rgba(5,150,105,.1);}
+.arabic-mode .level-option:hover{border-color:var(--tl-600);background:var(--tl-50);}
+.arabic-mode .level-option.active{border-color:var(--tl-700);background:var(--tl-50);box-shadow:0 0 0 3px rgba(15,118,110,.1);}
+.arabic-mode .level-option.active .level-radio{border-color:var(--tl-700);background:var(--tl-700);}
+.arabic-mode .start-btn{background:linear-gradient(135deg,var(--tl-900) 0%,var(--tl-700) 100%);}
+.persian-mode .level-option:hover{border-color:var(--pr-600);background:var(--pr-50);}
+.persian-mode .level-option.active{border-color:var(--pr-700);background:var(--pr-50);box-shadow:0 0 0 3px rgba(109,40,217,.1);}
+.persian-mode .start-btn{background:linear-gradient(135deg,var(--pr-900) 0%,var(--pr-700) 100%);}
+.level-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.level-text{flex:1;}
+.level-name{font-size:13px;font-weight:600;color:var(--sl-800);margin-bottom:2px;}
+.level-desc{font-size:11px;color:var(--sl-400);line-height:1.4;}
+.level-radio{width:16px;height:16px;border-radius:50%;border:2px solid var(--sl-300);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all var(--tr);}
+.level-option.active .level-radio{border-color:var(--em-700);background:var(--em-700);}
+.level-option.active .level-radio::after{content:'';width:5px;height:5px;background:white;border-radius:50%;}
+
+/* Dialect row */
+.dialect-row{display:flex;gap:8px;flex-wrap:wrap;}
+.dialect-btn{flex:1;min-width:80px;padding:9px 10px;border-radius:10px;border:1.5px solid var(--sl-200);background:var(--white);font-size:12px;font-weight:600;color:var(--sl-600);cursor:pointer;transition:all var(--tr);text-align:center;}
+.dialect-btn.active{border-color:var(--em-700);background:var(--em-50);color:var(--em-700);}
+.arabic-mode .dialect-btn.active{border-color:var(--tl-700);background:var(--tl-50);color:var(--tl-700);}
+.persian-mode .dialect-btn.active{border-color:var(--pr-700);background:var(--pr-50);color:var(--pr-700);}
+
+.start-btn{width:100%;padding:15px 24px;background:linear-gradient(135deg,var(--em-900) 0%,var(--em-700) 100%);color:white;border:none;border-radius:var(--r-lg);font-family:var(--font-body);font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden;transition:transform .15s ease,box-shadow var(--tr);box-shadow:0 4px 20px rgba(6,78,59,.35);}
+.start-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(6,78,59,.45);}
+.start-btn:active{transform:translateY(1px);}
+.start-btn-text{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.start-btn-en{font-size:15px;}
+.start-btn-ur{font-family:var(--font-arabic);font-size:13px;opacity:.8;}
+.start-btn-sparkles{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:16px;animation:float-sparkle 3s ease-in-out infinite;}
+@keyframes float-sparkle{0%,100%{transform:translateY(-50%) rotate(0deg);opacity:.8;}50%{transform:translateY(calc(-50% - 4px)) rotate(10deg);opacity:1;}}
+.settings-link{text-align:center;font-size:12px;color:var(--sl-400);cursor:pointer;padding:4px;text-decoration:underline;text-underline-offset:3px;}
+#setupScreen::-webkit-scrollbar{width:4px;}
+#setupScreen::-webkit-scrollbar-thumb{background:var(--sl-200);border-radius:2px;}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{display:flex;background:var(--white);border-top:1px solid var(--sl-200);flex-shrink:0;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;cursor:pointer;transition:all var(--tr);gap:2px;border:none;background:none;}
+.nav-item.active .nav-icon{color:var(--em-700);}
+.nav-item.active .nav-label{color:var(--em-700);font-weight:600;}
+.nav-item .nav-icon{font-size:18px;color:var(--sl-400);}
+.nav-item .nav-label{font-size:9px;color:var(--sl-400);font-weight:500;}
+.arabic-mode .nav-item.active .nav-icon,.arabic-mode .nav-item.active .nav-label{color:var(--tl-700);}
+.persian-mode .nav-item.active .nav-icon,.persian-mode .nav-item.active .nav-label{color:var(--pr-700);}
+
+/* ── CHAT SCREEN ── */
+#chatScreen{background:var(--sl-50);display:none;flex-direction:column;}
+#chatScreen.active{display:flex;}
+.chat-header{background:var(--em-900);padding:10px 14px;display:flex;align-items:center;gap:8px;flex-shrink:0;box-shadow:0 2px 12px rgba(6,78,59,.25);position:relative;z-index:10;}
+.chat-header.arabic-header{background:var(--tl-900);}
+.chat-header.persian-header{background:var(--pr-900);}
+.chat-header-back{width:34px;height:34px;background:rgba(255,255,255,.1);border:none;border-radius:10px;color:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background var(--tr);}
+.chat-header-back:hover{background:rgba(255,255,255,.18);}
+.chat-header-avatar{width:34px;height:34px;background:var(--am-400);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.chat-header-info{flex:1;min-width:0;}
+.chat-header-name{font-size:13px;font-weight:600;color:white;}
+.chat-header-level{font-size:10px;color:rgba(255,255,255,.6);}
+.chat-header-keys{font-size:10px;background:rgba(251,191,36,.2);color:var(--am-300);padding:3px 8px;border-radius:100px;font-weight:500;flex-shrink:0;}
+
+/* Tab panels inside chat */
+.tab-panels{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.tab-panel{display:none;flex:1;overflow-y:auto;flex-direction:column;}
+.tab-panel.active{display:flex;}
+
+/* Messages */
+.chat-messages{flex:1;overflow-y:auto;padding:16px 12px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;}
+.chat-messages::-webkit-scrollbar{width:3px;}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--sl-200);border-radius:2px;}
+.chat-divider{text-align:center;font-size:10px;color:var(--sl-400);font-weight:500;letter-spacing:.05em;display:flex;align-items:center;gap:8px;}
+.chat-divider::before,.chat-divider::after{content:'';flex:1;height:1px;background:var(--sl-200);}
+.msg-row{display:flex;gap:8px;align-items:flex-end;animation:msg-in .3s cubic-bezier(.4,0,.2,1);}
+@keyframes msg-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.msg-row.user{flex-direction:row-reverse;}
+.msg-avatar{width:28px;height:28px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.msg-avatar.ai{background:var(--em-100);}
+.msg-avatar.ai.arabic-av{background:var(--tl-100);}
+.msg-avatar.ai.persian-av{background:var(--pr-100);}
+.msg-avatar.user-av{background:var(--am-100);}
+.msg-bubble{max-width:82%;padding:10px 13px;border-radius:var(--r-lg);line-height:1.6;font-size:14px;position:relative;}
+.msg-row.ai .msg-bubble{background:var(--white);color:var(--sl-800);border:1px solid var(--sl-200);border-bottom-left-radius:4px;box-shadow:var(--sh-sm);}
+.msg-row.user .msg-bubble{background:var(--em-900);color:white;border-bottom-right-radius:4px;}
+.arabic-mode .msg-row.user .msg-bubble{background:var(--tl-900);}
+.persian-mode .msg-row.user .msg-bubble{background:var(--pr-900);}
+.feedback-block{background:var(--em-50);border:1px solid var(--em-100);border-radius:9px;padding:9px 11px;margin-bottom:8px;font-size:13px;}
+.arabic-feedback{background:var(--tl-50);border-color:var(--tl-100);}
+.persian-feedback{background:var(--pr-50);border-color:var(--pr-100);}
+.feedback-label{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--em-700);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;}
+.arabic-feedback .feedback-label{color:var(--tl-700);}
+.persian-feedback .feedback-label{color:var(--pr-700);}
+.conversation-block{font-size:14px;color:var(--sl-800);line-height:1.7;}
+.arabic-conv{font-family:var(--font-arabic);direction:rtl;font-size:16px;line-height:2.3;}
+.vocab-pill{display:inline-block;background:var(--am-100);color:var(--am-600);font-size:11px;font-weight:600;padding:2px 7px;border-radius:100px;margin:2px;}
+.msg-time{font-size:9px;color:var(--sl-400);margin-top:5px;display:block;}
+.msg-row.user .msg-time{color:rgba(255,255,255,.5);}
+.typing-indicator{display:flex;gap:8px;align-items:flex-end;}
+.typing-bubble{background:var(--white);border:1px solid var(--sl-200);border-radius:var(--r-lg);border-bottom-left-radius:4px;padding:12px 14px;display:flex;gap:5px;align-items:center;box-shadow:var(--sh-sm);}
+.typing-dot{width:6px;height:6px;background:var(--sl-300);border-radius:50%;animation:typing-bounce 1.4s infinite;}
+.typing-dot:nth-child(2){animation-delay:.2s;}.typing-dot:nth-child(3){animation-delay:.4s;}
+@keyframes typing-bounce{0%,60%,100%{transform:translateY(0);opacity:.5;}30%{transform:translateY(-5px);opacity:1;}}
+.welcome-card{background:linear-gradient(135deg,var(--em-900),var(--em-700));border-radius:var(--r-xl);padding:18px 16px;color:white;text-align:center;box-shadow:var(--sh-md);}
+.welcome-card.arabic-welcome{background:linear-gradient(135deg,var(--tl-900),var(--tl-700));}
+.welcome-card.persian-welcome{background:linear-gradient(135deg,var(--pr-900),var(--pr-700));}
+.welcome-card h2{font-family:var(--font-display);font-size:18px;margin-bottom:5px;}
+.welcome-card .arabic-greeting{font-family:var(--font-arabic);font-size:20px;display:block;margin-bottom:3px;}
+.welcome-card p{font-size:12px;opacity:.8;line-height:1.6;margin-bottom:10px;}
+.starter-chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:10px;}
+.starter-chip{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:5px 12px;font-size:11.5px;color:white;cursor:pointer;transition:background var(--tr);}
+.starter-chip:hover{background:rgba(255,255,255,.22);}
+.starter-chip.arabic-chip{font-family:var(--font-arabic);font-size:13px;padding:5px 14px;}
+
+/* Input bar */
+.chat-input-bar{background:var(--white);border-top:1px solid var(--sl-200);padding:10px 12px;display:flex;align-items:flex-end;gap:8px;flex-shrink:0;}
+.input-wrapper{flex:1;background:var(--sl-50);border:1.5px solid var(--sl-200);border-radius:15px;display:flex;align-items:flex-end;padding:7px 10px;gap:7px;transition:border-color var(--tr),box-shadow var(--tr);}
+.input-wrapper:focus-within{border-color:var(--em-600);box-shadow:0 0 0 3px rgba(5,150,105,.1);background:var(--white);}
+.arabic-mode .input-wrapper:focus-within{border-color:var(--tl-600);box-shadow:0 0 0 3px rgba(15,118,110,.1);}
+.persian-mode .input-wrapper:focus-within{border-color:var(--pr-600);box-shadow:0 0 0 3px rgba(124,58,237,.1);}
+textarea#msgInput{flex:1;border:none;background:transparent;resize:none;font-family:var(--font-body);font-size:14px;color:var(--sl-800);outline:none;line-height:1.5;max-height:90px;overflow-y:auto;}
+textarea#msgInput::placeholder{color:var(--sl-400);}
+.mic-btn{width:28px;height:28px;background:none;border:none;color:var(--sl-400);font-size:16px;cursor:pointer;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:color var(--tr),background var(--tr);}
+.mic-btn:hover{color:var(--em-600);background:var(--em-50);}
+.mic-btn.listening{color:#ef4444;animation:pulse-dot 1s infinite;}
+.send-btn{width:42px;height:42px;background:var(--em-700);border:none;border-radius:13px;color:white;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background var(--tr),transform .1s ease;box-shadow:0 2px 10px rgba(5,150,105,.3);}
+.send-btn:hover{background:var(--em-900);}
+.send-btn:active{transform:scale(.93);}
+.send-btn:disabled{background:var(--sl-300);box-shadow:none;cursor:not-allowed;}
+.arabic-mode .send-btn{background:var(--tl-700);}
+.arabic-mode .send-btn:hover{background:var(--tl-900);}
+.persian-mode .send-btn{background:var(--pr-700);}
+.persian-mode .send-btn:hover{background:var(--pr-900);}
+
+/* Speaking bar */
+#speakingBar{display:none;background:linear-gradient(90deg,var(--em-900),var(--em-700));padding:6px 14px;text-align:center;font-size:11px;color:white;align-items:center;justify-content:center;gap:7px;flex-shrink:0;}
+
+/* Toast */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e293b;color:white;padding:9px 16px;border-radius:100px;font-size:12px;font-weight:500;opacity:0;transition:all .3s ease;z-index:1000;white-space:nowrap;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── MODAL (settings) ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .3s ease;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-sheet{width:100%;background:var(--white);border-radius:24px 24px 0 0;padding:0 0 32px;transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);max-height:90vh;overflow-y:auto;}
+.modal-overlay.open .modal-sheet{transform:translateY(0);}
+.modal-handle{width:34px;height:4px;background:var(--sl-200);border-radius:2px;margin:12px auto 0;}
+.modal-header{padding:14px 18px 0;display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-size:17px;font-weight:700;color:var(--sl-800);}
+.modal-close{width:30px;height:30px;background:var(--sl-100);border:none;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sl-600);}
+.modal-tabs{display:flex;padding:14px 18px 0;border-bottom:1px solid var(--sl-200);gap:0;overflow-x:auto;}
+.modal-tab{padding:7px 14px;font-size:12px;font-weight:600;color:var(--sl-400);cursor:pointer;border-bottom:2.5px solid transparent;transition:all var(--tr);background:none;border-top:none;border-left:none;border-right:none;margin-bottom:-1px;white-space:nowrap;}
+.modal-tab.active{color:var(--em-700);border-bottom-color:var(--em-700);}
+.modal-tab-panel{display:none;padding:18px;}
+.modal-tab-panel.active{display:block;}
+.settings-row{display:flex;flex-direction:column;gap:5px;margin-bottom:18px;}
+.settings-label{font-size:11px;font-weight:700;color:var(--sl-600);text-transform:uppercase;letter-spacing:.06em;}
+.keys-input-sm{width:100%;background:var(--sl-50);border:1.5px solid var(--sl-200);border-radius:var(--r-md);padding:9px 11px;font-family:'Courier New',monospace;font-size:11px;color:var(--sl-800);resize:vertical;min-height:70px;outline:none;}
+.keys-input-sm:focus{border-color:var(--em-600);box-shadow:0 0 0 3px rgba(5,150,105,.12);}
+.key-status-sm{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--sl-400);margin-top:4px;}
+.key-count-badge{background:var(--em-50);color:var(--em-700);font-size:10px;font-weight:600;padding:2px 7px;border-radius:100px;}
+
+/* Voice settings */
+.voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.voice-card{border:1.5px solid var(--sl-200);border-radius:var(--r-md);padding:11px 12px;cursor:pointer;transition:all var(--tr);background:var(--white);}
+.voice-card:hover{border-color:var(--em-600);background:var(--em-mint);}
+.voice-card.active{border-color:var(--em-700);background:var(--em-mint);box-shadow:0 0 0 2px rgba(5,150,105,.1);}
+.voice-card-icon{font-size:18px;margin-bottom:4px;}
+.voice-card-name{font-size:12px;font-weight:600;color:var(--sl-800);}
+.voice-card-sub{font-size:10px;color:var(--sl-400);}
+.voice-preview-btn{width:100%;margin-top:10px;padding:9px;background:var(--em-50);border:1px solid var(--em-100);border-radius:9px;font-size:12px;color:var(--em-700);font-weight:600;cursor:pointer;transition:all var(--tr);}
+.voice-preview-btn:hover{background:var(--em-100);}
+
+/* About */
+.about-app-banner{background:linear-gradient(135deg,var(--em-900),var(--tl-900));border-radius:var(--r-lg);padding:18px;color:white;text-align:center;margin-bottom:18px;}
+.about-app-name{font-family:var(--font-display);font-size:19px;margin-bottom:3px;}
+.about-app-name .ai-tag{background:var(--am-400);color:var(--em-950);padding:1px 6px;border-radius:4px;font-family:var(--font-body);font-size:11px;font-weight:700;vertical-align:middle;margin:0 3px;}
+.about-version{font-size:10px;opacity:.6;}
+.feature-list{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
+.feature-item{display:flex;gap:11px;align-items:flex-start;background:var(--sl-50);border-radius:var(--r-md);padding:11px 13px;border:1px solid var(--sl-200);}
+.feature-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.feature-name{font-size:12px;font-weight:600;color:var(--sl-800);margin-bottom:2px;}
+.feature-desc{font-size:11px;color:var(--sl-400);line-height:1.4;}
+.dev-card{background:var(--em-50);border:1px solid var(--em-100);border-radius:var(--r-lg);padding:14px;}
+.dev-card-title{font-size:11px;font-weight:700;color:var(--em-700);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.dev-name{font-size:14px;font-weight:700;color:var(--sl-800);margin-bottom:2px;}
+.dev-affil{font-size:11px;color:var(--sl-500);margin-bottom:8px;line-height:1.4;}
+.dev-contacts{display:flex;flex-direction:column;gap:5px;}
+.dev-contact-row{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--sl-600);}
+.dev-contact-icon{width:24px;height:24px;background:var(--em-100);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+
+/* ── VOCABULARY PANEL ── */
+.vocab-panel{padding:14px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;}
+.vocab-header{background:linear-gradient(135deg,var(--em-900),var(--em-700));border-radius:var(--r-lg);padding:14px 16px;color:white;}
+.vocab-header.ar{background:linear-gradient(135deg,var(--tl-900),var(--tl-700));}
+.vocab-header.fa{background:linear-gradient(135deg,var(--pr-900),var(--pr-700));}
+.vocab-date{font-size:10px;opacity:.7;margin-bottom:4px;}
+.vocab-title{font-size:16px;font-weight:700;margin-bottom:2px;}
+.vocab-subtitle{font-size:11px;opacity:.7;}
+.vocab-cards{display:flex;flex-direction:column;gap:8px;}
+.vocab-word-card{background:var(--white);border:1px solid var(--sl-200);border-radius:var(--r-md);padding:12px 14px;box-shadow:var(--sh-sm);}
+.vocab-word-main{font-size:17px;font-weight:700;color:var(--sl-800);margin-bottom:4px;}
+.vocab-word-main.arabic{font-family:var(--font-arabic);font-size:20px;direction:rtl;}
+.vocab-word-trans{display:flex;flex-direction:column;gap:2px;}
+.vocab-trans-row{display:flex;align-items:center;gap:7px;font-size:12px;}
+.vocab-trans-lang{width:40px;font-size:10px;font-weight:700;color:var(--sl-400);text-transform:uppercase;}
+.vocab-trans-text{color:var(--sl-700);}
+.vocab-trans-text.arabic{font-family:var(--font-arabic);direction:rtl;font-size:14px;}
+.vocab-play-btn{width:28px;height:28px;border-radius:8px;border:none;background:var(--em-50);color:var(--em-700);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all var(--tr);margin-left:auto;}
+.vocab-play-btn:hover{background:var(--em-100);}
+.vocab-actions{display:flex;gap:8px;}
+.vocab-action-btn{flex:1;padding:11px;border-radius:var(--r-md);border:none;font-size:13px;font-weight:600;cursor:pointer;transition:all var(--tr);}
+.vocab-action-btn.primary{background:var(--em-700);color:white;}
+.vocab-action-btn.primary:hover{background:var(--em-900);}
+.vocab-action-btn.secondary{background:var(--sl-100);color:var(--sl-700);}
+.vocab-action-btn.secondary:hover{background:var(--sl-200);}
+
+/* ── TEST PANEL ── */
+.test-panel{padding:14px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;}
+.test-card{background:var(--white);border:1px solid var(--sl-200);border-radius:var(--r-lg);padding:16px;box-shadow:var(--sh-sm);}
+.test-q-label{font-size:10px;font-weight:700;color:var(--sl-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.test-question{font-size:16px;font-weight:600;color:var(--sl-800);margin-bottom:16px;line-height:1.5;}
+.test-question.arabic{font-family:var(--font-arabic);direction:rtl;font-size:20px;}
+.test-options{display:flex;flex-direction:column;gap:7px;}
+.test-option{padding:11px 14px;border-radius:10px;border:1.5px solid var(--sl-200);background:var(--white);font-size:13px;color:var(--sl-700);cursor:pointer;transition:all var(--tr);text-align:left;}
+.test-option:hover{border-color:var(--em-600);background:var(--em-mint);}
+.test-option.correct{border-color:#22c55e;background:#f0fdf4;color:#15803d;font-weight:600;}
+.test-option.wrong{border-color:#ef4444;background:#fef2f2;color:#dc2626;}
+.test-score{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--sl-50);border-radius:var(--r-lg);padding:14px;border:1px solid var(--sl-200);}
+.score-num{font-size:28px;font-weight:700;color:var(--em-700);}
+.score-label{font-size:12px;color:var(--sl-400);}
+.test-next-btn{width:100%;padding:13px;background:var(--em-700);color:white;border:none;border-radius:var(--r-md);font-size:14px;font-weight:600;cursor:pointer;transition:all var(--tr);}
+.test-next-btn:hover{background:var(--em-900);}
+.pronun-record-area{background:var(--sl-50);border:2px dashed var(--sl-200);border-radius:var(--r-lg);padding:24px;text-align:center;cursor:pointer;transition:all var(--tr);}
+.pronun-record-area:hover,.pronun-record-area.active{border-color:var(--em-600);background:var(--em-mint);}
+.pronun-mic{font-size:32px;margin-bottom:8px;}
+.pronun-hint{font-size:12px;color:var(--sl-400);}
+
+/* ── WORDLIST PANEL ── */
+.wordlist-panel{padding:14px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;}
+.wordlist-search{display:flex;gap:8px;align-items:center;background:var(--white);border:1.5px solid var(--sl-200);border-radius:12px;padding:9px 12px;transition:border-color var(--tr);}
+.wordlist-search:focus-within{border-color:var(--em-600);}
+.wordlist-search input{flex:1;border:none;background:transparent;font-family:var(--font-body);font-size:13px;color:var(--sl-800);outline:none;}
+.wordlist-search input::placeholder{color:var(--sl-400);}
+.topic-chips{display:flex;gap:7px;flex-wrap:wrap;}
+.topic-chip{padding:6px 12px;border-radius:100px;border:1.5px solid var(--sl-200);background:var(--white);font-size:11.5px;font-weight:600;color:var(--sl-600);cursor:pointer;transition:all var(--tr);white-space:nowrap;}
+.topic-chip.active{border-color:var(--em-700);background:var(--em-50);color:var(--em-700);}
+.arabic-mode .topic-chip.active{border-color:var(--tl-700);background:var(--tl-50);color:var(--tl-700);}
+.persian-mode .topic-chip.active{border-color:var(--pr-700);background:var(--pr-50);color:var(--pr-700);}
+.wordlist-table{background:var(--white);border:1px solid var(--sl-200);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-sm);}
+.wordlist-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:0;border-bottom:1px solid var(--sl-200);align-items:center;}
+.wordlist-row:last-child{border-bottom:none;}
+.wordlist-row.header{background:var(--sl-50);border-bottom:2px solid var(--sl-200);}
+.wordlist-cell{padding:10px 11px;font-size:12px;color:var(--sl-700);}
+.wordlist-cell.header{font-size:10px;font-weight:700;color:var(--sl-400);text-transform:uppercase;letter-spacing:.05em;}
+.wordlist-cell.arabic{font-family:var(--font-arabic);direction:rtl;font-size:14px;color:var(--sl-800);}
+.wordlist-cell.urdu{font-family:var(--font-arabic);direction:rtl;font-size:13px;}
+.wordlist-cell.english{font-weight:500;color:var(--sl-800);}
+.wordlist-play-btn{background:none;border:none;color:var(--sl-400);cursor:pointer;font-size:14px;padding:6px 8px;transition:color var(--tr);}
+.wordlist-play-btn:hover{color:var(--em-700);}
+
+/* Scenario panel */
+.scenario-panel{padding:14px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;}
+.scenario-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.scenario-card{border:1.5px solid var(--sl-200);border-radius:var(--r-md);padding:13px;cursor:pointer;transition:all var(--tr);background:var(--white);text-align:center;}
+.scenario-card:hover{border-color:var(--em-600);background:var(--em-mint);transform:translateY(-1px);}
+.scenario-icon{font-size:24px;margin-bottom:6px;}
+.scenario-name{font-size:12px;font-weight:600;color:var(--sl-800);}
+.scenario-sub{font-size:10px;color:var(--sl-400);margin-top:2px;}
+.scenario-detail{background:var(--white);border:1px solid var(--sl-200);border-radius:var(--r-lg);padding:14px;display:none;}
+.scenario-detail.active{display:block;}
+.scenario-phrase-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--sl-200);}
+.scenario-phrase-row:last-child{border-bottom:none;}
+.scenario-phrase-texts{flex:1;}
+.scenario-phrase-target{font-size:14px;font-weight:600;color:var(--sl-800);}
+.scenario-phrase-target.arabic{font-family:var(--font-arabic);direction:rtl;font-size:16px;}
+.scenario-phrase-ur{font-size:11px;color:var(--sl-400);margin-top:2px;}
+.scenario-phrase-ur.arabic{font-family:var(--font-arabic);direction:rtl;font-size:12px;}
+
+/* Sentence translate */
+.translate-panel{padding:14px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;}
+.translate-box{background:var(--white);border:1.5px solid var(--sl-200);border-radius:var(--r-lg);padding:14px;box-shadow:var(--sh-sm);}
+.translate-label{font-size:11px;font-weight:700;color:var(--sl-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.translate-input{width:100%;border:none;outline:none;font-family:var(--font-arabic);font-size:16px;direction:rtl;color:var(--sl-800);resize:none;line-height:1.8;min-height:60px;background:transparent;}
+.translate-btn{width:100%;padding:12px;background:var(--em-700);color:white;border:none;border-radius:var(--r-md);font-size:14px;font-weight:600;cursor:pointer;transition:all var(--tr);}
+.translate-btn:hover{background:var(--em-900);}
+.translate-result{background:var(--sl-50);border:1px solid var(--sl-200);border-radius:var(--r-lg);padding:14px;}
+.translate-result-row{margin-bottom:12px;}
+.translate-result-row:last-child{margin-bottom:0;}
+.translate-result-lang{font-size:10px;font-weight:700;color:var(--sl-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.translate-result-text{font-size:14px;color:var(--sl-800);font-weight:500;}
+.translate-result-text.arabic{font-family:var(--font-arabic);direction:rtl;font-size:17px;line-height:2;}
+.translate-audio-btn{display:flex;align-items:center;gap:7px;padding:9px 14px;background:var(--em-50);border:1px solid var(--em-100);border-radius:9px;font-size:12px;color:var(--em-700);font-weight:600;cursor:pointer;transition:all var(--tr);border:none;margin-top:8px;}
+.translate-audio-btn:hover{background:var(--em-100);}
+</style>
+</head>
+<body>
+
+<!-- ════════ SETUP SCREEN ════════ -->
+<div id="setupScreen" class="screen">
+  <div class="setup-hero">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-badge"><span class="hero-badge-dot"></span> AI-Powered Language Learning Pro</div>
+    <h1 class="hero-title">
+      SM <span class="ai-badge">AI</span> LangMentor <span style="color:#86efac;">Pro</span>
+      <br><span style="font-size:13px;color:rgba(255,255,255,.65);font-family:var(--font-body);font-weight:300;">English · Arabic · Persian Tutor</span>
+    </h1>
+    <p class="hero-tagline">🗣️ Voice · 📚 Daily Vocab · 🧪 Tests · 🌍 3 Languages</p>
+  </div>
+
+  <div class="setup-body">
+    <!-- Language -->
+    <div class="form-card" style="padding:0;overflow:hidden;">
+      <div class="lang-tabs">
+        <button class="lang-tab active-en" id="tabEn" onclick="selectLanguage('english')">
+          <span class="lang-tab-emoji">🇬🇧</span>
+          <span class="lang-tab-name">English</span>
+          <span class="lang-tab-sub">Conversation</span>
+          <span class="lang-active-mark"></span>
+        </button>
+        <button class="lang-tab" id="tabAr" onclick="selectLanguage('arabic')">
+          <span class="lang-tab-emoji">📖</span>
+          <span class="lang-tab-name">العربية</span>
+          <span class="lang-tab-sub">Quranic</span>
+          <span class="lang-active-mark"></span>
+        </button>
+        <button class="lang-tab" id="tabFa" onclick="selectLanguage('persian')">
+          <span class="lang-tab-emoji">🌹</span>
+          <span class="lang-tab-name">فارسی</span>
+          <span class="lang-tab-sub">Persian</span>
+          <span class="lang-active-mark"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Dialect -->
+    <div class="form-card" id="dialectCard">
+      <div class="form-label"><div class="form-label-icon">🌍</div> <span id="dialectLabel">English Dialect</span></div>
+      <div class="dialect-row" id="dialectRow">
+        <button class="dialect-btn active" data-dialect="en-GB" onclick="selectDialect(this)">🇬🇧 UK English</button>
+        <button class="dialect-btn" data-dialect="en-US" onclick="selectDialect(this)">🇺🇸 US English</button>
+      </div>
+    </div>
+
+    <!-- Level -->
+    <div class="form-card" id="levelCard">
+      <div class="form-label"><div class="form-label-icon">📚</div> Your Level</div>
+      <div class="level-options" id="levelOptions">
+        <div class="level-option active" data-level="beginner" onclick="selectLevel(this)">
+          <div class="level-icon">🌱</div>
+          <div class="level-text"><div class="level-name">Beginner</div><div class="level-desc" id="ldesc-beginner">Simple English + Urdu Support (ابتدائی)</div></div>
+          <div class="level-radio"></div>
+        </div>
+        <div class="level-option" data-level="intermediate" onclick="selectLevel(this)">
+          <div class="level-icon">🌿</div>
+          <div class="level-text"><div class="level-name">Intermediate</div><div class="level-desc" id="ldesc-intermediate">Daily Life Conversations (روزمرہ گفتگو)</div></div>
+          <div class="level-radio"></div>
+        </div>
+        <div class="level-option" data-level="advanced" onclick="selectLevel(this)">
+          <div class="level-icon">🌳</div>
+          <div class="level-text"><div class="level-name">Advanced</div><div class="level-desc" id="ldesc-advanced">Academic, Scholarly & Dawah (علمی گفتگو)</div></div>
+          <div class="level-radio"></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="start-btn" id="startBtn" onclick="startChat()">
+      <div class="start-btn-text">
+        <span class="start-btn-en" id="startBtnText">Start English Conversation</span>
+        <span class="start-btn-ur" id="startBtnSub">بات چیت شروع کریں</span>
+      </div>
+      <span class="start-btn-sparkles">✨</span>
+    </button>
+    <div class="settings-link" onclick="openModal()">⚙️ Settings & About</div>
+  </div>
+</div>
+
+<!-- ════════ CHAT SCREEN ════════ -->
+<div id="chatScreen" class="screen hidden">
+  <div class="chat-header" id="chatHeader">
+    <button class="chat-header-back" onclick="goBack()">←</button>
+    <div class="chat-header-avatar" id="chatAvatar">📖</div>
+    <div class="chat-header-info">
+      <div class="chat-header-name" id="chatHeaderName">SM AI English Tutor</div>
+      <div class="chat-header-level" id="headerLevel">Beginner Mode</div>
+    </div>
+    <div class="chat-header-keys" id="headerKeys">0 Keys</div>
+    <button id="ttsToggleBtn" onclick="toggleTTS()" title="آواز میں جواب سنیں" style="width:34px;height:34px;background:rgba(255,255,255,.1);border:none;border-radius:9px;color:white;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .25s;">🔇</button>
+  </div>
+
+  <!-- Tab panels -->
+  <div class="tab-panels">
+    <!-- CHAT -->
+    <div class="tab-panel active" id="panel-chat">
+      <div class="chat-messages" id="chatMessages"><div class="chat-divider">Today</div></div>
+      <div id="speakingBar" style="display:none;background:linear-gradient(90deg,var(--em-900),var(--em-700));padding:5px 14px;text-align:center;font-size:11px;color:white;align-items:center;justify-content:center;gap:7px;flex-shrink:0;">
+        <span style="animation:pulse-dot 1s infinite;display:inline-block;">🔊</span>
+        <span>AI بول رہا ہے...</span>
+        <button onclick="stopSpeaking()" style="background:rgba(255,255,255,.2);border:none;border-radius:5px;color:white;font-size:10px;padding:2px 7px;cursor:pointer;margin-left:5px;">⏹</button>
+      </div>
+      <div class="chat-input-bar">
+        <button id="voiceConvBtn" onclick="toggleVoiceConversation()" title="آواز میں بات کریں" style="width:42px;height:42px;background:var(--sl-100);border:1.5px solid var(--sl-200);border-radius:13px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s;">🎙️</button>
+        <div class="input-wrapper">
+          <textarea id="msgInput" rows="1" placeholder="Type your message here…" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+          <button class="mic-btn" id="micBtn" title="Voice Input" onclick="toggleMic()">🎤</button>
+        </div>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+
+    <!-- VOCAB -->
+    <div class="tab-panel" id="panel-vocab">
+      <div class="vocab-panel" id="vocabContent">
+        <div class="vocab-header" id="vocabHeader">
+          <div class="vocab-date" id="vocabDate">Loading...</div>
+          <div class="vocab-title">📚 Daily Vocabulary</div>
+          <div class="vocab-subtitle" id="vocabSubtitle">روزانہ کے نئے الفاظ</div>
+        </div>
+        <div id="vocabCards" class="vocab-cards"><p style="text-align:center;color:var(--sl-400);font-size:13px;padding:20px;">Loading vocabulary...</p></div>
+        <div class="vocab-actions">
+          <button class="vocab-action-btn secondary" onclick="loadVocab()">🔄 Refresh</button>
+          <button class="vocab-action-btn primary" onclick="switchTab('test')">🧪 Take Test</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEST -->
+    <div class="tab-panel" id="panel-test">
+      <div class="test-panel" id="testContent">
+        <div style="display:flex;gap:8px;margin-bottom:4px;">
+          <button onclick="startVocabTest()" style="flex:1;padding:11px;background:var(--em-700);color:white;border:none;border-radius:var(--r-md);font-size:13px;font-weight:600;cursor:pointer;">📝 Vocab Test</button>
+          <button onclick="startPronunTest()" style="flex:1;padding:11px;background:var(--sl-100);color:var(--sl-700);border:none;border-radius:var(--r-md);font-size:13px;font-weight:600;cursor:pointer;">🎤 Pronunciation</button>
+        </div>
+        <div id="testArea">
+          <div style="background:var(--sl-50);border:1px solid var(--sl-200);border-radius:var(--r-lg);padding:30px;text-align:center;">
+            <div style="font-size:32px;margin-bottom:12px;">🧪</div>
+            <div style="font-size:14px;font-weight:600;color:var(--sl-800);margin-bottom:6px;">Ready to Test?</div>
+            <div style="font-size:12px;color:var(--sl-400);">تیار ہیں؟ اوپر بٹن دبائیں</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WORDLIST -->
+    <div class="tab-panel" id="panel-wordlist">
+      <div class="wordlist-panel">
+        <div class="wordlist-search">
+          <span style="font-size:15px;">🔍</span>
+          <input type="text" id="wordlistSearch" placeholder="Search topic... (e.g. prayer, hotel)" oninput="filterWordlist(this.value)">
+        </div>
+        <div class="topic-chips" id="topicChips"></div>
+        <div class="wordlist-table" id="wordlistTable">
+          <div class="wordlist-row header">
+            <div class="wordlist-cell header" id="wlColTarget">Target</div>
+            <div class="wordlist-cell header">اردو</div>
+            <div class="wordlist-cell header" id="wlColEn">English</div>
+            <div class="wordlist-cell header"></div>
+          </div>
+          <div id="wordlistRows"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANSLATE -->
+    <div class="tab-panel" id="panel-translate">
+      <div class="translate-panel">
+        <div class="translate-box">
+          <div class="translate-label">اردو میں لکھیں — Write in Urdu</div>
+          <textarea class="translate-input" id="translateInput" placeholder="مثلاً: میں ٹھیک ہوں" rows="3"></textarea>
+        </div>
+        <button class="translate-btn" onclick="doTranslate()">🌐 Translate & Pronounce</button>
+        <div id="translateResult" style="display:none;" class="translate-result">
+          <div class="translate-result-row">
+            <div class="translate-result-lang" id="tr-lang1-label">English (UK)</div>
+            <div class="translate-result-text" id="tr-lang1"></div>
+            <button class="translate-audio-btn" onclick="speakTranslation(1)">🔊 Listen</button>
+          </div>
+          <div class="translate-result-row" id="tr-target-row">
+            <div class="translate-result-lang" id="tr-lang2-label">Arabic</div>
+            <div class="translate-result-text arabic" id="tr-lang2"></div>
+            <button class="translate-audio-btn" onclick="speakTranslation(2)">🔊 Listen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCENARIOS -->
+    <div class="tab-panel" id="panel-scenarios">
+      <div class="scenario-panel">
+        <div style="background:var(--sl-800);border-radius:var(--r-lg);padding:14px;color:white;margin-bottom:4px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:3px;">🌍 Conversation Scenarios</div>
+          <div style="font-size:11px;opacity:.7;">موضوع منتخب کریں اور الفاظ سیکھیں</div>
+        </div>
+        <div class="scenario-grid" id="scenarioGrid"></div>
+        <div class="scenario-detail" id="scenarioDetail"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <div class="bottom-nav" id="bottomNav">
+    <button class="nav-item active" id="nav-chat" onclick="switchTab('chat')"><span class="nav-icon">💬</span><span class="nav-label">Chat</span></button>
+    <button class="nav-item" id="nav-vocab" onclick="switchTab('vocab')"><span class="nav-icon">📚</span><span class="nav-label">Vocab</span></button>
+    <button class="nav-item" id="nav-test" onclick="switchTab('test')"><span class="nav-icon">🧪</span><span class="nav-label">Test</span></button>
+    <button class="nav-item" id="nav-wordlist" onclick="switchTab('wordlist')"><span class="nav-icon">📋</span><span class="nav-label">Words</span></button>
+    <button class="nav-item" id="nav-translate" onclick="switchTab('translate')"><span class="nav-icon">🌐</span><span class="nav-label">Translate</span></button>
+    <button class="nav-item" id="nav-scenarios" onclick="switchTab('scenarios')"><span class="nav-icon">🏨</span><span class="nav-label">Scenes</span></button>
+  </div>
+</div>
+
+<!-- ════════ SETTINGS MODAL ════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">⚙️ Settings & About</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchModalTab('settings',this)">Settings</button>
+      <button class="modal-tab" onclick="switchModalTab('voice',this)">Voice</button>
+      <button class="modal-tab" onclick="switchModalTab('about',this)">About</button>
+      <button class="modal-tab" onclick="switchModalTab('developer',this)">Developer</button>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="modal-tab-panel active" id="panel-settings">
+      <div class="settings-row">
+        <div class="settings-label">🔑 Gemini API Keys</div>
+        <p style="font-size:11px;color:var(--sl-400);margin-bottom:7px;line-height:1.5;">API keys add کریں — خود بخود rotate ہوتی ہیں۔</p>
+        <div style="display:flex;gap:7px;margin-bottom:8px;">
+          <input type="password" id="newKeyInput" placeholder="AIzaSy... نئی key یہاں paste کریں"
+            style="flex:1;background:var(--sl-50);border:1.5px solid var(--sl-200);border-radius:9px;padding:9px 11px;font-family:monospace;font-size:11px;color:var(--sl-800);outline:none;"
+            onfocus="this.style.borderColor='var(--em-600)'" onblur="this.style.borderColor='var(--sl-200)'"
+            onkeydown="if(event.key==='Enter')addApiKey()"/>
+          <button onclick="addApiKey()" style="background:var(--em-700);color:white;border:none;border-radius:9px;padding:9px 14px;font-size:12px;font-weight:600;cursor:pointer;">+ Add</button>
+        </div>
+        <div id="keysList" style="display:flex;flex-direction:column;gap:5px;min-height:28px;">
+          <p style="font-size:11px;color:var(--sl-400);text-align:center;padding:7px;" id="noKeysMsg">ابھی کوئی key نہیں ہے — اوپر add کریں</p>
+        </div>
+        <div class="key-status-sm" style="margin-top:7px;">
+          <span>Total Keys:</span><span class="key-count-badge" id="keyCount">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VOICE -->
+    <div class="modal-tab-panel" id="panel-voice">
+      <div class="settings-row">
+        <div class="settings-label">🎙️ Voice Type</div>
+        <div class="voice-grid" id="voiceGrid">
+          <div class="voice-card active" data-voice-type="normal-female" onclick="selectVoiceCard(this)">
+            <div class="voice-card-icon">👩</div>
+            <div class="voice-card-name">Woman (Normal)</div>
+            <div class="voice-card-sub">خاتون — عام رفتار</div>
+          </div>
+          <div class="voice-card" data-voice-type="normal-male" onclick="selectVoiceCard(this)">
+            <div class="voice-card-icon">👨</div>
+            <div class="voice-card-name">Man (Normal)</div>
+            <div class="voice-card-sub">مرد — عام رفتار</div>
+          </div>
+          <div class="voice-card" data-voice-type="slow-female" onclick="selectVoiceCard(this)">
+            <div class="voice-card-icon">👩‍🏫</div>
+            <div class="voice-card-name">Woman (Slow)</div>
+            <div class="voice-card-sub">خاتون — آہستہ</div>
+          </div>
+          <div class="voice-card" data-voice-type="fast-male" onclick="selectVoiceCard(this)">
+            <div class="voice-card-icon">🏃‍♂️</div>
+            <div class="voice-card-name">Man (Fast)</div>
+            <div class="voice-card-sub">مرد — تیز</div>
+          </div>
+          <div class="voice-card" data-voice-type="child" onclick="selectVoiceCard(this)">
+            <div class="voice-card-icon">🧒</div>
+            <div class="voice-card-name">Child</div>
+            <div class="voice-card-sub">بچوں کی آواز</div>
+          </div>
+          <div class="voice-card" data-voice-type="deep-male" onclick="selectVoiceCard(this)">
+            <div class="voice-card-icon">🎙️</div>
+            <div class="voice-card-name">Deep Voice</div>
+            <div class="voice-card-sub">گہری آواز</div>
+          </div>
+        </div>
+        <button class="voice-preview-btn" onclick="previewVoice()">▶ Preview / سنیں</button>
+      </div>
+      <div class="settings-row">
+        <div class="settings-label">🔊 Voice Speed</div>
+        <input type="range" min="0.5" max="2" step="0.1" value="0.9" id="speedSlider" oninput="updateSpeedLabel(this.value)" style="width:100%;accent-color:var(--em-700);margin-bottom:4px;">
+        <div style="font-size:12px;color:var(--sl-600);">Speed: <strong id="speedLabel">0.9x</strong> (1.0 = normal)</div>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="modal-tab-panel" id="panel-about">
+      <div class="about-app-banner">
+        <div class="about-app-name">SM <span class="ai-tag">AI</span> LangMentor Pro</div>
+        <div class="about-version">Version 2.0 · English · Arabic · Persian</div>
+      </div>
+      <div class="feature-list">
+        <div class="feature-item"><div class="feature-icon">🗣️</div><div><div class="feature-name">Voice Conversation</div><div class="feature-desc">آواز میں بات کریں — مختلف آوازیں چنیں</div></div></div>
+        <div class="feature-item"><div class="feature-icon">📚</div><div><div class="feature-name">Daily Vocabulary</div><div class="feature-desc">روزانہ نئے الفاظ — اردو + انگریزی + عربی</div></div></div>
+        <div class="feature-item"><div class="feature-icon">🧪</div><div><div class="feature-name">Vocab & Pronunciation Tests</div><div class="feature-desc">وکیبلری اور تلفظ کا ٹیسٹ</div></div></div>
+        <div class="feature-item"><div class="feature-icon">📋</div><div><div class="feature-name">Topic Word Lists</div><div class="feature-desc">موضوع کے مطابق الفاظ — نماز، ہوٹل، بازار</div></div></div>
+        <div class="feature-item"><div class="feature-icon">🌐</div><div><div class="feature-name">Sentence Translator</div><div class="feature-desc">اردو جملے کا ترجمہ + آڈیو تلفظ</div></div></div>
+        <div class="feature-item"><div class="feature-icon">🏨</div><div><div class="feature-name">Scenario Conversations</div><div class="feature-desc">ہوٹل، ایئرپورٹ، بازار — عملی گفتگو</div></div></div>
+        <div class="feature-item"><div class="feature-icon">🌹</div><div><div class="feature-name">Persian Module</div><div class="feature-desc">فارسی بھی سیکھیں — اردو + فارسی + عربی رابطہ</div></div></div>
+      </div>
+    </div>
+
+    <!-- DEVELOPER -->
+    <div class="modal-tab-panel" id="panel-developer">
+      <div class="dev-card">
+        <div class="dev-card-title">👨‍💻 Developer Information</div>
+        <div class="dev-name">Dr. Sajid Mahmood</div>
+        <div class="dev-affil">Department of Islamic & Religious Studies<br>Hazara University Mansehra, KPK, Pakistan</div>
+        <div class="dev-contacts">
+          <div class="dev-contact-row"><div class="dev-contact-icon">📧</div><span>sajidzbi@gmail.com</span></div>
+          <div class="dev-contact-row"><div class="dev-contact-icon">📱</div><span>WhatsApp: 03009080730</span></div>
+          <div class="dev-contact-row"><div class="dev-contact-icon">🏛️</div><span>Hazara University, Mansehra</span></div>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--sl-400);margin-top:14px;line-height:1.6;text-align:center;">This application is developed for academic and community use. For collaboration or licensing, please contact the developer.</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+const S = {
+  ttsEnabled: false,
+  isVoiceConvMode: false,
+  currentUtterance: null,
+  apiKeys: [],
+  currentKeyIndex: 0,
+  level: 'beginner',
+  language: 'english',  // english | arabic | persian
+  dialect: 'en-GB',     // en-GB | en-US | ar-SA | ar-EG | fa-IR
+  voiceType: 'normal-female',
+  voiceSpeed: 0.9,
+  history: [],
+  isLoading: false,
+  recognition: null,
+  isListening: false,
+  vocabWords: [],
+  testWords: [],
+  testIndex: 0,
+  testScore: 0,
+  testMode: 'vocab',   // vocab | pronun
+  currentTranslations: {},
+  activeTab: 'chat'
+};
+
+const LEVELS = { beginner:'Beginner Mode', intermediate:'Intermediate Mode', advanced:'Advanced Mode' };
+
+// ── COMPACT SYSTEM PROMPTS (token-efficient) ──
+const SYS_EN = `You are "SM AI English Tutor" for Pakistani madrassa & general students whose mother tongue is Urdu. Assume they may know little or no English. Be patient, encouraging, respectful.
+Format EVERY reply in exactly 2 parts:
+[SMART FEEDBACK]: Write in simple URDU (Urdu script), NOT English. Use short separate lines:
+- If the student's sentence is correct, say so in Urdu and praise. If wrong: "آپ نے لکھا: <their sentence>" then "صحیح جملہ: <corrected English sentence>" then explain the mistake in 1-2 simple Urdu lines.
+- "اردو مطلب: <Urdu meaning of the correct sentence>"
+- "تلفظ: <how to say the correct sentence, written in Urdu letters>"
+- "نیا لفظ: <1 better English word> = <Urdu meaning>"
+- If the student wrote in Urdu, give the English sentence for it and ask them to repeat it.
+[CONVERSATION]: Reply in English + ONE follow-up question. BEGINNER: very short, easy words, and add the Urdu translation of your reply in brackets on a new line. INTERMEDIATE: simple English, Urdu only for hard words. ADVANCED: natural English and keep the Urdu feedback to a few short lines.
+Rules: Keep short (save tokens). No markdown symbols. Put English words/sentences inside "double quotes". Level: {LEVEL}.`;
+
+const SYS_AR = `أنت "معلّم العربية" لطلاب باكستان لغتهم الأم الأردية، وقد لا يعرفون العربية ولا الإنجليزية. علّم العربية الفصحى القرآنية فقط.
+اكتب كل رد في جزأين:
+[تقييم ذكي]: اكتب الشرح كله بالأردية البسيطة (بالخط الأردي) وليس بالإنجليزية، في أسطر قصيرة: إن كانت جملة الطالب صحيحة فاثنِ عليه بالأردية؛ وإن كانت خاطئة فاكتب "آپ نے لکھا: …" ثم "صحیح جملہ: …" (بالتشكيل) ثم اشرح الخطأ في سطر أو سطرين بالأردية. ثم "اردو مطلب: …" ثم "تلفظ: …" (بحروف اردو) ثم "نیا لفظ: … = …" (مفردة قرآنية). وإن كتب الطالب بالأردية فأعطه الجملة العربية وكلّفه بتكرارها.
+[المحادثة]: رد عربي طبيعي بالتشكيل + سؤال واحد. للمبتدئ: جمل قصيرة جداً مع ترجمة أردية بين قوسين في سطر جديد.
+قواعد: موجز (وفّر tokens). بلا رموز markdown. المستوى: {LEVEL}.`;
+
+const SYS_FA = `You are "SM AI Persian Tutor" for Pakistani students whose mother tongue is Urdu. Teach standard Persian (Farsi) with Urdu and Arabic connections. Assume they may know little or no Persian or English.
+Format EVERY reply in exactly 2 parts:
+[SMART FEEDBACK]: Write in simple URDU (Urdu script), NOT English. Use short separate lines:
+- If the student's sentence is correct, say so in Urdu and praise. If wrong: "آپ نے لکھا: <their sentence>" then "صحیح جملہ: <corrected Persian sentence>" then explain the mistake in 1-2 simple Urdu lines.
+- "اردو مطلب: <Urdu meaning of the correct sentence>"
+- "تلفظ: <how to say it, written in Urdu letters>"
+- "نیا لفظ: <1 better Persian word> = <Urdu meaning>"
+- If the student wrote in Urdu, give the Persian sentence for it and ask them to repeat it.
+[CONVERSATION]: Natural Persian reply + ONE follow-up question. BEGINNER: very short, easy words, and add the Urdu translation in brackets on a new line. INTERMEDIATE: simple Persian, Urdu only for hard words. ADVANCED: natural Persian, short Urdu feedback.
+Rules: Concise (save tokens). No markdown symbols. Level: {LEVEL}.`;
+
+// ── VOCAB DATA ── (15 per language, rotated by day)
+const VOCAB_DATA = {
+  english: [
+    {word:'Eloquent',      urdu:'فصیح و بلیغ',      en:'Eloquent',      ar:'فَصِيح',      ipa:'/ˈɛl.ə.kwənt/'},
+    {word:'Perseverance',  urdu:'صبر و استقامت',     en:'Perseverance',  ar:'مُثَابَرَة',   ipa:'/ˌpɜː.sɪˈvɪər.əns/'},
+    {word:'Compassion',    urdu:'رحمدلی',             en:'Compassion',    ar:'رَحْمَة',      ipa:'/kəmˈpæʃ.ən/'},
+    {word:'Gratitude',     urdu:'شکرگزاری',           en:'Gratitude',     ar:'امْتِنَان',    ipa:'/ˈɡræt.ɪ.tjuːd/'},
+    {word:'Integrity',     urdu:'دیانتداری',           en:'Integrity',     ar:'نَزَاهَة',     ipa:'/ɪnˈteɡ.rɪ.ti/'},
+    {word:'Diligent',      urdu:'محنتی',              en:'Diligent',      ar:'مُجْتَهِد',    ipa:'/ˈdɪl.ɪ.dʒənt/'},
+    {word:'Benevolent',    urdu:'نیک طینت',           en:'Benevolent',    ar:'خَيِّر',       ipa:'/bɪˈnev.ə.lənt/'},
+    {word:'Articulate',    urdu:'واضح گفتار',         en:'Articulate',    ar:'مُعَبِّر',     ipa:'/ɑːˈtɪk.jʊ.lət/'},
+    {word:'Profound',      urdu:'گہرا/عمیق',          en:'Profound',      ar:'عَمِيق',      ipa:'/prəˈfaʊnd/'},
+    {word:'Humility',      urdu:'عاجزی',              en:'Humility',      ar:'تَوَاضُع',    ipa:'/hjuːˈmɪl.ɪ.ti/'},
+    {word:'Sincere',       urdu:'مخلص',               en:'Sincere',       ar:'مُخْلِص',     ipa:'/sɪnˈsɪər/'},
+    {word:'Steadfast',     urdu:'ثابت قدم',           en:'Steadfast',     ar:'ثَابِت',      ipa:'/ˈsted.fɑːst/'},
+    {word:'Pious',         urdu:'متقی/پرہیزگار',      en:'Pious',         ar:'تَقِيّ',      ipa:'/ˈpaɪ.əs/'},
+    {word:'Forbearance',   urdu:'برداشت/حوصلہ',       en:'Forbearance',   ar:'حِلْم',       ipa:'/fɔːˈbeər.əns/'},
+    {word:'Eloquence',     urdu:'فصاحت',              en:'Eloquence',     ar:'فَصَاحَة',    ipa:'/ˈɛl.ə.kwəns/'},
+  ],
+  arabic: [
+    {word:'الرَّحْمَة',    urdu:'رحمت',               en:'Mercy',         ar:'الرَّحْمَة',   ipa:'ar-raḥmah'},
+    {word:'الصَّبْر',      urdu:'صبر',                en:'Patience',      ar:'الصَّبْر',     ipa:'aṣ-ṣabr'},
+    {word:'الْعِلْم',      urdu:'علم',                en:'Knowledge',     ar:'الْعِلْم',     ipa:'al-ʿilm'},
+    {word:'الْإِخْلَاص',   urdu:'اخلاص',              en:'Sincerity',     ar:'الْإِخْلَاص',  ipa:'al-ikhlāṣ'},
+    {word:'الشُّكْر',      urdu:'شکر/شکریہ',           en:'Gratitude',     ar:'الشُّكْر',     ipa:'ash-shukr'},
+    {word:'التَّوَاضُع',   urdu:'عاجزی',              en:'Humility',      ar:'التَّوَاضُع',  ipa:'at-tawāḍuʿ'},
+    {word:'الْحِكْمَة',    urdu:'حکمت',               en:'Wisdom',        ar:'الْحِكْمَة',   ipa:'al-ḥikmah'},
+    {word:'الْعَدْل',      urdu:'عدل/انصاف',           en:'Justice',       ar:'الْعَدْل',     ipa:'al-ʿadl'},
+    {word:'الْأَمَانَة',   urdu:'امانت',              en:'Trust/Honesty', ar:'الْأَمَانَة',  ipa:'al-amānah'},
+    {word:'التَّوْبَة',    urdu:'توبہ',               en:'Repentance',    ar:'التَّوْبَة',   ipa:'at-tawbah'},
+    {word:'الدُّعَاء',     urdu:'دعا',                en:'Supplication',  ar:'الدُّعَاء',    ipa:'ad-duʿāʾ'},
+    {word:'الْإِيمَان',    urdu:'ایمان',              en:'Faith',         ar:'الْإِيمَان',   ipa:'al-īmān'},
+    {word:'الصِّدْق',      urdu:'سچ/صداقت',           en:'Truthfulness',  ar:'الصِّدْق',     ipa:'aṣ-ṣidq'},
+    {word:'الْجِهَاد',     urdu:'جہاد/کوشش',          en:'Striving',      ar:'الْجِهَاد',    ipa:'al-jihād'},
+    {word:'الزَّكَاة',     urdu:'زکوٰة',              en:'Almsgiving',    ar:'الزَّكَاة',    ipa:'az-zakāh'},
+  ],
+  persian: [
+    {word:'مهربانی',       urdu:'مہربانی',            en:'Kindness',      ar:'لُطْف',        ipa:'mehr-bāni'},
+    {word:'دانش',          urdu:'دانش/علم',           en:'Wisdom',        ar:'حِكْمَة',      ipa:'dānesh'},
+    {word:'صبر',           urdu:'صبر',                en:'Patience',      ar:'صَبْر',        ipa:'sabr'},
+    {word:'دوست',          urdu:'دوست',               en:'Friend',        ar:'صَدِيق',      ipa:'dust'},
+    {word:'خوشحالی',       urdu:'خوشی',               en:'Happiness',     ar:'سَعَادَة',    ipa:'khosh-ḥāli'},
+    {word:'عشق',           urdu:'محبت/عشق',           en:'Love',          ar:'حُبّ',         ipa:'eshq'},
+    {word:'امید',          urdu:'امید',               en:'Hope',          ar:'أَمَل',        ipa:'omid'},
+    {word:'راستی',         urdu:'سچائی',              en:'Truth',         ar:'صِدْق',        ipa:'rāsti'},
+    {word:'آزادی',         urdu:'آزادی',              en:'Freedom',       ar:'حُرِّيَّة',    ipa:'āzādi'},
+    {word:'زیبایی',        urdu:'خوبصورتی',           en:'Beauty',        ar:'جَمَال',       ipa:'zibāyi'},
+    {word:'خردمند',        urdu:'عقلمند',             en:'Wise',          ar:'عَاقِل',       ipa:'kheradmand'},
+    {word:'بخشش',          urdu:'معافی/بخشش',         en:'Forgiveness',   ar:'عَفْو',        ipa:'bakhshesh'},
+    {word:'وفا',           urdu:'وفا/وفاداری',        en:'Loyalty',       ar:'وَفَاء',       ipa:'wafā'},
+    {word:'سخاوت',         urdu:'سخاوت',              en:'Generosity',    ar:'كَرَم',        ipa:'sakhāvat'},
+    {word:'ادب',           urdu:'ادب',                en:'Respect',       ar:'أَدَب',        ipa:'adab'},
+  ]
+};
+
+// ── TOPIC WORDLISTS ──
+const TOPICS = {
+  prayer: {
+    label:'🕌 Prayer / نماز',
+    words:[
+      {target:'الصَّلَاة',urdu:'نماز',en:'Prayer',fa:'نماز'},
+      {target:'الْوُضُوء',urdu:'وضو',en:'Ablution',fa:'وضو'},
+      {target:'الْقِبْلَة',urdu:'قبلہ',en:'Qibla',fa:'قبله'},
+      {target:'الرَّكْعَة',urdu:'رکعت',en:'Unit of Prayer',fa:'رکعت'},
+      {target:'السُّجُود',urdu:'سجدہ',en:'Prostration',fa:'سجده'},
+      {target:'الْأَذَان',urdu:'اذان',en:'Call to Prayer',fa:'اذان'},
+      {target:'الْجَمَاعَة',urdu:'جماعت',en:'Congregation',fa:'جماعت'},
+    ]
+  },
+  funeral: {
+    label:'🕊️ Funeral / جنازہ',
+    words:[
+      {target:'صَلَاة الْجَنَازَة',urdu:'نماز جنازہ',en:'Funeral Prayer',fa:'نماز میت'},
+      {target:'الْمَيِّت',urdu:'میت',en:'The Deceased',fa:'متوفی'},
+      {target:'الْكَفَن',urdu:'کفن',en:'Shroud',fa:'کفن'},
+      {target:'الْقَبْر',urdu:'قبر',en:'Grave',fa:'قبر'},
+      {target:'الْغُسْل',urdu:'غسل',en:'Ritual Washing',fa:'غسل'},
+      {target:'التَّعْزِيَة',urdu:'تعزیت',en:'Condolence',fa:'تسلیت'},
+    ]
+  },
+  hotel: {
+    label:'🏨 Hotel / ہوٹل',
+    words:[
+      {target:'Hotel',urdu:'ہوٹل',en:'Hotel',fa:'هتل'},
+      {target:'Reservation',urdu:'بکنگ',en:'Reservation',fa:'رزرواسیون'},
+      {target:'Room',urdu:'کمرہ',en:'Room',fa:'اتاق'},
+      {target:'Checkout',urdu:'چیک آؤٹ',en:'Checkout',fa:'خروج'},
+      {target:'Breakfast',urdu:'ناشتہ',en:'Breakfast',fa:'صبحانه'},
+      {target:'Reception',urdu:'استقبالیہ',en:'Reception',fa:'پذیرش'},
+    ]
+  },
+  airport: {
+    label:'✈️ Airport / ہوائی اڈہ',
+    words:[
+      {target:'Airport',urdu:'ہوائی اڈہ',en:'Airport',fa:'فرودگاه'},
+      {target:'Boarding Pass',urdu:'بورڈنگ پاس',en:'Boarding Pass',fa:'کارت سوار'},
+      {target:'Passport',urdu:'پاسپورٹ',en:'Passport',fa:'گذرنامه'},
+      {target:'Customs',urdu:'کسٹمز',en:'Customs',fa:'گمرک'},
+      {target:'Flight',urdu:'پرواز',en:'Flight',fa:'پرواز'},
+      {target:'Terminal',urdu:'ٹرمینل',en:'Terminal',fa:'ترمینال'},
+    ]
+  },
+  market: {
+    label:'🛍️ Market / بازار',
+    words:[
+      {target:'Market',urdu:'بازار',en:'Market',fa:'بازار'},
+      {target:'Price',urdu:'قیمت',en:'Price',fa:'قیمت'},
+      {target:'Discount',urdu:'چھوٹ',en:'Discount',fa:'تخفیف'},
+      {target:'Receipt',urdu:'رسید',en:'Receipt',fa:'رسید'},
+      {target:'Exchange',urdu:'واپسی',en:'Exchange',fa:'تعویض'},
+      {target:'Cash',urdu:'نقد',en:'Cash',fa:'پول نقد'},
+    ]
+  },
+  mosque: {
+    label:'🕌 Mosque / مسجد',
+    words:[
+      {target:'الْمَسْجِد',urdu:'مسجد',en:'Mosque',fa:'مسجد'},
+      {target:'الْإِمَام',urdu:'امام',en:'Imam',fa:'امام'},
+      {target:'الْمِنْبَر',urdu:'منبر',en:'Pulpit',fa:'منبر'},
+      {target:'الْمِحْرَاب',urdu:'محراب',en:'Prayer Niche',fa:'محراب'},
+      {target:'الْجُمُعَة',urdu:'جمعہ',en:'Friday Prayer',fa:'جمعه'},
+    ]
+  }
+};
+
+// ── SCENARIOS ──
+// Each phrase: target=English, ar=Arabic (with harakat), fa=Persian, urdu=Urdu meaning
+const SCENARIOS = {
+  hotel: {
+    icon:'🏨', name:'At the Hotel', sub:'ہوٹل میں · في الفندق',
+    phrases:[
+      {target:'Do you have a room available?',       ar:'هَلْ يُوجَدُ غُرْفَةٌ شَاغِرَةٌ؟',      fa:'آیا اتاق خالی دارید؟',         urdu:'کیا کمرہ خالی ہے؟'},
+      {target:'I have a reservation.',               ar:'لَدَيَّ حَجْزٌ مُسْبَقٌ.',              fa:'رزرواسیون دارم.',              urdu:'میری بکنگ ہے۔'},
+      {target:'What time is checkout?',              ar:'مَا هُوَ وَقْتُ تَسْلِيمِ الْغُرْفَةِ؟', fa:'ساعت خروج چه وقت است؟',        urdu:'چیک آؤٹ کا وقت کیا ہے؟'},
+      {target:'Can I have the bill please?',         ar:'هَلْ يُمْكِنُنِي الْحُصُولُ عَلَى الْفَاتُورَةِ؟', fa:'لطفاً صورت‌حساب بدهید.',  urdu:'کیا مجھے بل دے سکتے ہیں؟'},
+      {target:'Is breakfast included?',              ar:'هَلْ وَجْبَةُ الْإِفْطَارِ مَشْمُولَةٌ؟', fa:'آیا صبحانه شامل است؟',         urdu:'کیا ناشتہ شامل ہے؟'},
+      {target:'I need a room with Wi-Fi.',           ar:'أَحْتَاجُ غُرْفَةً مَعَ وَاي فَاي.',      fa:'به اتاق با وای‌فای نیاز دارم.', urdu:'مجھے وائی فائی والا کمرہ چاہیے۔'},
+      {target:'Please bring extra towels.',          ar:'مِنْ فَضْلِكَ أَحْضِرْ مَنَاشِفَ إِضَافِيَّةً.', fa:'لطفاً حوله اضافه بیاورید.', urdu:'برائے کرم اضافی تولیے لائیں۔'},
+    ]
+  },
+  airport: {
+    icon:'✈️', name:'At the Airport', sub:'ہوائی اڈے پر · في المطار',
+    phrases:[
+      {target:'Where is the boarding gate?',         ar:'أَيْنَ بَوَّابَةُ الصُّعُودِ؟',          fa:'دروازه سوار شدن کجاست؟',       urdu:'بورڈنگ گیٹ کہاں ہے؟'},
+      {target:'I need to check in.',                 ar:'أَحْتَاجُ إِلَى تَسْجِيلِ الدُّخُولِ.',  fa:'باید چک‌این کنم.',             urdu:'مجھے چیک ان کرنا ہے۔'},
+      {target:'Is the flight on time?',              ar:'هَلِ الرِّحْلَةُ فِي مَوْعِدِهَا؟',       fa:'آیا پرواز به موقع است؟',       urdu:'کیا پرواز وقت پر ہے؟'},
+      {target:'Where is baggage claim?',             ar:'أَيْنَ مَنْطِقَةُ اسْتِلَامِ الْأَمْتِعَةِ؟', fa:'تحویل چمدان کجاست؟',      urdu:'سامان کہاں ملے گا؟'},
+      {target:'My passport please.',                 ar:'جَوَازُ سَفَرِي مِنْ فَضْلِكَ.',          fa:'گذرنامه‌ام را بگیرید.',        urdu:'میرا پاسپورٹ لیجیے۔'},
+      {target:'I missed my flight.',                 ar:'فَاتَتْنِي رِحْلَتِي الْجَوِّيَّةُ.',     fa:'پرواز من را از دست دادم.',     urdu:'میری پرواز چھوٹ گئی۔'},
+    ]
+  },
+  doctor: {
+    icon:'🏥', name:'At the Doctor', sub:'ڈاکٹر کے پاس · عند الطبيب',
+    phrases:[
+      {target:'I am not feeling well.',              ar:'لَا أَشْعُرُ بِالرَّاحَةِ.',              fa:'حالم خوب نیست.',               urdu:'مجھے اچھا نہیں لگ رہا۔'},
+      {target:'I have a fever.',                     ar:'أُعَانِي مِنَ الْحُمَّى.',                fa:'تب دارم.',                     urdu:'مجھے بخار ہے۔'},
+      {target:'Where does it hurt?',                 ar:'أَيْنَ يُؤْلِمُكَ؟',                     fa:'کجا درد می‌کند؟',              urdu:'کہاں درد ہے؟'},
+      {target:'I need a prescription.',              ar:'أَحْتَاجُ إِلَى وَصْفَةٍ طِبِّيَّةٍ.',   fa:'به نسخه پزشکی نیاز دارم.',    urdu:'مجھے نسخہ چاہیے۔'},
+      {target:'I am allergic to penicillin.',        ar:'أَنَا حَسَّاسٌ لِلْبِنِسِلِّين.',         fa:'به پنی‌سیلین حساسیت دارم.',   urdu:'مجھے پینسلین سے الرجی ہے۔'},
+      {target:'How many times a day?',               ar:'كَمْ مَرَّةً فِي الْيَوْمِ؟',             fa:'چند بار در روز؟',              urdu:'دن میں کتنی بار؟'},
+    ]
+  },
+  market: {
+    icon:'🛍️', name:'At the Market', sub:'بازار میں · في السوق',
+    phrases:[
+      {target:'How much does this cost?',            ar:'بِكَمْ هَذَا؟',                           fa:'این چقدر است؟',                urdu:'اس کی قیمت کیا ہے؟'},
+      {target:'Can you give a discount?',            ar:'هَلْ يُمْكِنُكَ إِعْطَائِي خَصْمًا؟',    fa:'تخفیف می‌دهید؟',               urdu:'کیا چھوٹ دے سکتے ہیں؟'},
+      {target:'I am just looking.',                  ar:'أَنَا فَقَطْ أَتَفَرَّجُ.',               fa:'فقط نگاه می‌کنم.',             urdu:'میں صرف دیکھ رہا ہوں۔'},
+      {target:'Do you accept card?',                 ar:'هَلْ تَقْبَلُ الدَّفْعَ بِالْبِطَاقَةِ؟', fa:'کارت قبول می‌کنید؟',           urdu:'کیا کارڈ چلتا ہے؟'},
+      {target:'I will take this one.',               ar:'سَآخُذُ هَذَا الْوَاحِدَ.',               fa:'این را می‌خواهم.',              urdu:'میں یہ لے لیتا ہوں۔'},
+      {target:'Do you have a bigger size?',          ar:'هَلْ لَدَيْكَ مَقَاسٌ أَكْبَرُ؟',         fa:'سایز بزرگتر دارید؟',           urdu:'کیا بڑا سائز ہے؟'},
+    ]
+  },
+  mosque: {
+    icon:'🕌', name:'At the Mosque', sub:'مسجد میں · في المسجد',
+    phrases:[
+      {target:'Is it time for prayer?',              ar:'هَلْ حَانَ وَقْتُ الصَّلَاةِ؟',           fa:'آیا وقت نماز شده؟',           urdu:'کیا نماز کا وقت ہو گیا؟'},
+      {target:'Where can I make wudu?',              ar:'أَيْنَ يُمْكِنُنِي الْوُضُوءُ؟',          fa:'کجا می‌توانم وضو بگیرم؟',     urdu:'وضو کہاں کر سکتا ہوں؟'},
+      {target:'What time is Friday prayer?',         ar:'مَا هُوَ وَقْتُ صَلَاةِ الْجُمُعَةِ؟',    fa:'وقت نماز جمعه چه ساعتی است؟', urdu:'جمعہ کا وقت کیا ہے؟'},
+      {target:'Please straighten the rows.',         ar:'مِنْ فَضْلِكُمْ سَوُّوا الصُّفُوفَ.',     fa:'لطفاً صفوف را مستقیم کنید.',   urdu:'برائے مہربانی صفیں سیدھی کریں۔'},
+      {target:'The sermon will begin shortly.',      ar:'سَتَبْدَأُ الْخُطْبَةُ بَعْدَ قَلِيلٍ.',  fa:'خطبه به زودی شروع می‌شود.',   urdu:'خطبہ جلد شروع ہوگا۔'},
+    ]
+  },
+  school: {
+    icon:'🏫', name:'At School / Madrassa', sub:'اسکول · مدرسہ',
+    phrases:[
+      {target:'Can you explain this please?',        ar:'هَلْ يُمْكِنُكَ شَرْحُ هَذَا؟',           fa:'می‌توانید این را توضیح دهید؟', urdu:'کیا یہ سمجھا سکتے ہیں؟'},
+      {target:'I did not understand.',               ar:'لَمْ أَفْهَمْ.',                           fa:'نفهمیدم.',                     urdu:'میں سمجھا نہیں۔'},
+      {target:'When is the exam?',                   ar:'مَتَى الِامْتِحَانُ؟',                    fa:'امتحان کِی است؟',              urdu:'امتحان کب ہے؟'},
+      {target:'May I ask a question?',               ar:'هَلْ يُمْكِنُنِي طَرْحُ سُؤَالٍ؟',        fa:'می‌توانم سوال بپرسم؟',         urdu:'کیا سوال پوچھ سکتا ہوں؟'},
+      {target:'Please repeat that slowly.',          ar:'مِنْ فَضْلِكَ كَرِّرْ ذَلِكَ بِبُطْءٍ.',  fa:'لطفاً آهسته تکرار کنید.',      urdu:'برائے کرم آہستہ دہرائیں۔'},
+      {target:'What is the homework?',               ar:'مَا هُوَ الْوَاجِبُ الْمَنْزِلِيُّ؟',     fa:'تکلیف چیست؟',                 urdu:'گھر کا کام کیا ہے؟'},
+    ]
+  }
+};
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+window.onload = () => {
+  const saved = localStorage.getItem('sm_tutor_keys');
+  if (saved) {
+    try { const p=JSON.parse(saved); S.apiKeys=Array.isArray(p)?p:p.split(',').map(k=>k.trim()).filter(k=>k.length>0); }
+    catch(e){ S.apiKeys=saved.split(',').map(k=>k.trim()).filter(k=>k.length>0); }
+    renderKeysList(); updateKeyCount();
+  }
+  const sv=localStorage.getItem('sm_tutor_voice');
+  if(sv){ S.voiceType=sv; document.querySelectorAll('.voice-card').forEach(c=>{ c.classList.toggle('active',c.dataset.voiceType===sv); }); }
+  const ss=localStorage.getItem('sm_tutor_speed');
+  if(ss){ S.voiceSpeed=parseFloat(ss); const sl=document.getElementById('speedSlider'); if(sl){sl.value=ss;} updateSpeedLabel(ss); }
+  const sl2=localStorage.getItem('sm_tutor_level');
+  if(sl2) selectLevel(document.querySelector(`[data-level="${sl2}"]`));
+  const slng=localStorage.getItem('sm_tutor_lang');
+  if(slng) selectLanguage(slng, true);
+  const sdial=localStorage.getItem('sm_tutor_dialect');
+  if(sdial) selectDialectByCode(sdial);
+  initSpeech();
+  buildTopicChips();
+  buildScenarioGrid();
+};
+
+// ══════════════════════════════════════════
+//  LANGUAGE / DIALECT / LEVEL
+// ══════════════════════════════════════════
+function selectLanguage(lang, silent) {
+  S.language = lang;
+  if(!silent) localStorage.setItem('sm_tutor_lang', lang);
+  const tabEn=document.getElementById('tabEn');
+  const tabAr=document.getElementById('tabAr');
+  const tabFa=document.getElementById('tabFa');
+  [tabEn,tabAr,tabFa].forEach(t=>t.className='lang-tab');
+  if(lang==='english'){tabEn.className='lang-tab active-en'; setDialects('English Dialect',['en-GB|🇬🇧 UK English','en-US|🇺🇸 US English'],'en-GB');}
+  else if(lang==='arabic'){tabAr.className='lang-tab active-ar'; setDialects('Arabic Dialect',['ar-SA|🇸🇦 Saudi Arabic (Default)','ar-EG|🇪🇬 Egyptian Arabic'],'ar-SA');}
+  else {tabFa.className='lang-tab active-fa'; setDialects('Persian Dialect',['fa-IR|🇮🇷 Standard Persian'],'fa-IR');}
+
+  const levelCard=document.getElementById('levelCard');
+  ['arabic-mode','persian-mode'].forEach(c=>levelCard.classList.remove(c));
+  if(lang==='arabic'){levelCard.classList.add('arabic-mode');}
+  else if(lang==='persian'){levelCard.classList.add('persian-mode');}
+
+  const descs={
+    english:{beginner:'Simple English + Urdu Support (ابتدائی)',intermediate:'Daily Life Conversations (روزمرہ گفتگو)',advanced:'Academic, Scholarly & Dawah (علمی گفتگو)'},
+    arabic:{beginner:'Basic Quranic vocab + English/Urdu (مبتدئ)',intermediate:'Nahw, Sarf & Quranic phrases (متوسط)',advanced:'Tafsir, Hadith & Classical texts (متقدم)'},
+    persian:{beginner:'Basic Farsi + Urdu/Arabic links (مبتدئ)',intermediate:'Daily Persian Conversations (روزمرہ)',advanced:'Classical Persian & Literature (کلاسیک)'}
+  };
+  const d=descs[lang];
+  document.getElementById('ldesc-beginner').textContent=d.beginner;
+  document.getElementById('ldesc-intermediate').textContent=d.intermediate;
+  document.getElementById('ldesc-advanced').textContent=d.advanced;
+
+  const starts={english:'Start English Conversation|بات چیت شروع کریں',arabic:'Start Arabic Conversation|ابدأ المحادثة',persian:'Start Persian Conversation|فارسی شروع کریں'};
+  const [en,ur]=starts[lang].split('|');
+  document.getElementById('startBtnText').textContent=en;
+  document.getElementById('startBtnSub').textContent=ur;
+  const btn=document.getElementById('startBtn');
+  if(lang==='arabic') btn.style.background='linear-gradient(135deg,#134e4a 0%,#0f766e 100%)';
+  else if(lang==='persian') btn.style.background='linear-gradient(135deg,#4c1d95 0%,#6d28d9 100%)';
+  else btn.style.background='';
+}
+
+function setDialects(labelText, options, defaultCode) {
+  document.getElementById('dialectLabel').textContent=labelText;
+  const row=document.getElementById('dialectRow');
+  row.innerHTML='';
+  options.forEach(opt=>{
+    const [code,label]=opt.split('|');
+    const btn=document.createElement('button');
+    btn.className='dialect-btn'+(code===defaultCode?' active':'');
+    btn.dataset.dialect=code;
+    btn.textContent=label;
+    btn.onclick=()=>selectDialect(btn);
+    row.appendChild(btn);
+  });
+  S.dialect=defaultCode;
+}
+
+function selectDialect(el) {
+  document.querySelectorAll('.dialect-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  S.dialect=el.dataset.dialect;
+  localStorage.setItem('sm_tutor_dialect',S.dialect);
+}
+
+function selectDialectByCode(code) {
+  const btn=document.querySelector(`.dialect-btn[data-dialect="${code}"]`);
+  if(btn) selectDialect(btn);
+}
+
+function selectLevel(el) {
+  if(!el) return;
+  document.querySelectorAll('.level-option').forEach(o=>o.classList.remove('active'));
+  el.classList.add('active');
+  S.level=el.dataset.level;
+  localStorage.setItem('sm_tutor_level',S.level);
+}
+
+// ══════════════════════════════════════════
+//  KEYS
+// ══════════════════════════════════════════
+function updateKeyCount(){
+  document.getElementById('keyCount').textContent=S.apiKeys.length;
+  const n=document.getElementById('noKeysMsg');
+  if(n) n.style.display=S.apiKeys.length===0?'block':'none';
+}
+function addApiKey(){
+  const input=document.getElementById('newKeyInput');
+  const val=input.value.trim();
+  if(!val){showToast('API key درج کریں');return;}
+  if(S.apiKeys.includes(val)){showToast('یہ key پہلے سے موجود ہے');input.value='';return;}
+  S.apiKeys.push(val); saveKeys(); input.value=''; renderKeysList(); updateKeyCount();
+  showToast('✅ Key #'+S.apiKeys.length+' add ہو گئی!');
+}
+function removeApiKey(idx){ S.apiKeys.splice(idx,1); saveKeys(); renderKeysList(); updateKeyCount(); }
+function saveKeys(){ localStorage.setItem('sm_tutor_keys',JSON.stringify(S.apiKeys)); }
+function renderKeysList(){
+  const list=document.getElementById('keysList');
+  const noMsg=document.getElementById('noKeysMsg');
+  Array.from(list.children).forEach(c=>{if(c.id!=='noKeysMsg')c.remove();});
+  S.apiKeys.forEach((key,i)=>{
+    const masked=key.substring(0,8)+'••••••••'+key.slice(-4);
+    const div=document.createElement('div');
+    div.style.cssText='display:flex;align-items:center;gap:7px;background:var(--sl-50);border:1px solid var(--sl-200);border-radius:9px;padding:8px 11px;';
+    div.innerHTML=`<div style="width:22px;height:22px;background:var(--em-100);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--em-700);flex-shrink:0;">${i+1}</div><div style="flex:1;font-family:monospace;font-size:11px;color:var(--sl-700);">${masked}</div><button onclick="removeApiKey(${i})" style="background:none;border:none;color:#ef4444;font-size:15px;cursor:pointer;">✕</button>`;
+    list.appendChild(div);
+  });
+  if(noMsg) noMsg.style.display=S.apiKeys.length===0?'block':'none';
+}
+function getNextKey(){ const k=S.apiKeys[S.currentKeyIndex%S.apiKeys.length]; S.currentKeyIndex++; return k; }
+// Gemini request with retry: rotates keys and falls back to a lighter model when the API is overloaded (503/429/500/504)
+async function geminiRequest(body){
+  const models=['gemini-2.5-flash','gemini-2.5-flash','gemini-2.5-flash-lite','gemini-2.5-flash-lite'];
+  const tries=Math.max(models.length,Math.min(S.apiKeys.length,8));
+  let lastErr, busy=false;
+  for(let i=0;i<tries;i++){
+    if(i>0) await new Promise(r=>setTimeout(r,Math.min(i,3)*700));
+    try{
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${models[Math.min(i,models.length-1)]}:generateContent?key=${encodeURIComponent(getNextKey())}`,{
+        method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)
+      });
+      if(res.ok) return await res.json();
+      let msg=`API error ${res.status}`;
+      try{const e=await res.json(); msg=e.error?.message||msg;}catch(_){}
+      if([429,500,503,504].includes(res.status)) busy=true;
+      lastErr=new Error(msg);
+    }catch(err){ lastErr=err; }
+  }
+  throw busy?new Error('Server busy، چند لمحوں بعد دوبارہ کوشش کریں'):lastErr;
+}
+
+// ══════════════════════════════════════════
+//  VOICE SETTINGS
+// ══════════════════════════════════════════
+function selectVoiceCard(el){
+  document.querySelectorAll('.voice-card').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  S.voiceType=el.dataset.voiceType;
+  localStorage.setItem('sm_tutor_voice',S.voiceType);
+}
+function updateSpeedLabel(v){ const el=document.getElementById('speedLabel'); if(el)el.textContent=parseFloat(v).toFixed(1)+'x'; S.voiceSpeed=parseFloat(v); localStorage.setItem('sm_tutor_speed',v); }
+function previewVoice(){
+  const previews={english:'Hello, this is a preview of the selected voice.',arabic:'السلام عليكم، هذا معاينة الصوت.',persian:'سلام، این پیش‌نمایش صدا است.'};
+  speakText(previews[S.language]||previews.english, true);
+}
+
+// ══════════════════════════════════════════
+//  CHAT START / BACK
+// ══════════════════════════════════════════
+function startChat(){
+  updateKeyCount();
+  if(S.apiKeys.length===0){showToast('Please add a Gemini API key in Settings.');openModal();return;}
+  S.history=[];
+  const isAr=S.language==='arabic', isFa=S.language==='persian';
+  const header=document.getElementById('chatHeader');
+  header.classList.toggle('arabic-header',isAr);
+  header.classList.toggle('persian-header',isFa);
+  const langMap={english:'SM AI English Tutor',arabic:'SM AI Arabic Tutor · معلم العربية',persian:'SM AI Persian Tutor · آموزگار فارسی'};
+  document.getElementById('chatHeaderName').textContent=langMap[S.language];
+  document.getElementById('headerLevel').textContent=LEVELS[S.level]+(isAr?' · عربي':isFa?' · فارسی':'');
+  document.getElementById('headerKeys').textContent=`${S.apiKeys.length} Key${S.apiKeys.length>1?'s':''}`;
+
+  // Welcome
+  const msgs=document.getElementById('chatMessages');
+  msgs.innerHTML='<div class="chat-divider">Today</div>';
+  const wc=document.createElement('div');
+  if(isAr){
+    wc.className='welcome-card arabic-welcome';
+    wc.innerHTML=`<h2><span class="arabic-greeting">السلام عليكم! 🌙</span></h2><p>Quranic Arabic tutor — start with a greeting or choose:</p><div class="starter-chips"><div class="starter-chip arabic-chip" onclick="sendStarter(this)">بسم الله</div><div class="starter-chip arabic-chip" onclick="sendStarter(this)">ما هو النحو؟</div><div class="starter-chip arabic-chip" onclick="sendStarter(this)">علّمني</div><div class="starter-chip" onclick="sendStarter(this)">What is i'rab?</div></div>`;
+  } else if(isFa){
+    wc.className='welcome-card persian-welcome';
+    wc.innerHTML=`<h2><span class="arabic-greeting" style="font-size:20px;">سلام! 🌹</span></h2><p>Your Persian tutor — start with a greeting or choose:</p><div class="starter-chips"><div class="starter-chip arabic-chip" onclick="sendStarter(this)">سلام</div><div class="starter-chip arabic-chip" onclick="sendStarter(this)">اسمم چیست؟</div><div class="starter-chip" onclick="sendStarter(this)">Teach me Farsi basics</div></div>`;
+  } else {
+    wc.className='welcome-card';
+    wc.innerHTML=`<h2>Assalamu Alaikum! 👋</h2><p>Your English tutor — start with a greeting or try:</p><div class="starter-chips"><div class="starter-chip" onclick="sendStarter(this)">Introduce yourself</div><div class="starter-chip" onclick="sendStarter(this)">Tell me about Islam</div><div class="starter-chip" onclick="sendStarter(this)">My daily routine</div><div class="starter-chip" onclick="sendStarter(this)">What is Fiqh?</div></div>`;
+  }
+  msgs.appendChild(wc);
+
+  const inp=document.getElementById('msgInput');
+  inp.placeholder=isAr?'اكتب رسالتك...':isFa?'پیام خود را بنویسید...':'Type your message…';
+  inp.dir=(isAr||isFa)?'rtl':'ltr';
+  inp.style.fontFamily=(isAr||isFa)?'var(--font-arabic)':'var(--font-body)';
+
+  const chatBody=document.getElementById('chatScreen');
+  const inputBar=document.querySelector('.chat-input-bar');
+  ['arabic-mode','persian-mode'].forEach(c=>{chatBody.classList.remove(c);inputBar.classList.remove(c);});
+  if(isAr){chatBody.classList.add('arabic-mode');inputBar.classList.add('arabic-mode');}
+  else if(isFa){chatBody.classList.add('persian-mode');inputBar.classList.add('persian-mode');}
+
+  document.getElementById('setupScreen').classList.add('hidden');
+  const chat=document.getElementById('chatScreen');
+  chat.classList.remove('hidden');
+  chat.style.display='flex';
+  switchTab('chat');
+  loadVocab();
+  setTimeout(()=>inp.focus(),400);
+}
+
+function goBack(){
+  document.getElementById('chatScreen').classList.add('hidden');
+  document.getElementById('setupScreen').classList.remove('hidden');
+  stopMic(); stopSpeaking();
+}
+
+// ══════════════════════════════════════════
+//  TAB SYSTEM
+// ══════════════════════════════════════════
+function switchTab(name){
+  S.activeTab=name;
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  const panel=document.getElementById('panel-'+name);
+  const nav=document.getElementById('nav-'+name);
+  if(panel) panel.classList.add('active');
+  if(nav) nav.classList.add('active');
+  if(name==='vocab') loadVocab();
+  if(name==='wordlist') renderWordlist(null);
+  if(name==='scenarios') buildScenarioGrid();
+}
+
+// ══════════════════════════════════════════
+//  MESSAGING
+// ══════════════════════════════════════════
+function getPrunedHistory(){ return S.history.slice(-8); }
+
+async function sendMessage(text=null){
+  if(S.isLoading) return;
+  const input=document.getElementById('msgInput');
+  const msg=text||input.value.trim();
+  if(!msg) return;
+  input.value=''; autoResize(input);
+  addUserBubble(msg);
+  const isAr=S.language==='arabic', isFa=S.language==='persian';
+  S.history.push({role:'user',content:`[Level:${S.level}] ${msg}`});
+  showTyping(); S.isLoading=true;
+  document.getElementById('sendBtn').disabled=true;
+
+  const apiKey=getNextKey();
+  let sysTmpl=S.language==='arabic'?SYS_AR:S.language==='persian'?SYS_FA:SYS_EN;
+  const sysPrompt=sysTmpl.replace('{LEVEL}',S.level.toUpperCase())+`\nDialect: ${S.dialect}`;
+
+  try {
+    const data=await geminiRequest({
+        system_instruction:{parts:[{text:sysPrompt}]},
+        contents:getPrunedHistory().map(h=>({role:h.role==='assistant'?'model':'user',parts:[{text:h.content}]})),
+        generationConfig:{temperature:0.7,maxOutputTokens:1200}
+    });
+    const reply=data.candidates?.[0]?.content?.parts?.[0]?.text||'Sorry, no response.';
+    S.history.push({role:'assistant',content:reply});
+    removeTyping(); addAIBubble(reply); speakText(reply);
+  } catch(err){
+    S.history.pop(); removeTyping(); showToast('Error: '+err.message.substring(0,60));
+  } finally {
+    S.isLoading=false; document.getElementById('sendBtn').disabled=false;
+  }
+}
+
+function sendStarter(el){ sendMessage(el.textContent.trim()); }
+function handleKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} }
+function autoResize(ta){ ta.style.height='auto'; ta.style.height=Math.min(ta.scrollHeight,90)+'px'; }
+
+// ══════════════════════════════════════════
+//  RENDER MESSAGES
+// ══════════════════════════════════════════
+function getTime(){ return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
+
+function addUserBubble(text){
+  const msgs=document.getElementById('chatMessages');
+  const row=document.createElement('div');
+  row.className='msg-row user';
+  const isRTL=S.language==='arabic'||S.language==='persian';
+  row.innerHTML=`<div class="msg-avatar user-av">🧑‍🎓</div><div class="msg-bubble" style="${isRTL?'direction:rtl;font-family:var(--font-arabic);font-size:15px;line-height:2;':''}">${escapeHtml(text)}<div class="msg-time">${getTime()}</div></div>`;
+  msgs.appendChild(row); scrollBottom();
+}
+
+function parseAIResponse(text){
+  let feedback='',conversation=text;
+  const fbMatch=text.match(/\[(SMART FEEDBACK|تقييم ذكي)\]([\s\S]*?)(?=\[(CONVERSATION|المحادثة)|$)/i);
+  const cvMatch=text.match(/\[(CONVERSATION[^\]]*|المحادثة[^\]]*)\]([\s\S]*?)$/i);
+  if(fbMatch) feedback=fbMatch[2].trim();
+  if(cvMatch) conversation=cvMatch[2].trim();
+  else if(fbMatch) conversation=text.replace(fbMatch[0],'').trim();
+  return {feedback,conversation};
+}
+
+function addAIBubble(text){
+  const msgs=document.getElementById('chatMessages');
+  const {feedback,conversation}=parseAIResponse(text);
+  const isAr=S.language==='arabic', isFa=S.language==='persian';
+  const row=document.createElement('div');
+  row.className='msg-row ai';
+  let inner='';
+  if(feedback){
+    const lbl=isAr?'✨ تقييم ذكي':isFa?'✨ بازخورد هوشمند':'✨ Smart Feedback';
+    const fbClass=isAr?'arabic-feedback':isFa?'persian-feedback':'';
+    inner+=`<div class="feedback-block ${fbClass}"><div class="feedback-label">${lbl}</div><div class="${isAr||isFa?'arabic-text':''}" ${isAr||isFa?'':'dir="auto" style="font-family:var(--font-body),var(--font-arabic);line-height:2;"'}>${formatFeedback(escapeHtml(feedback))}</div></div>`;
+  }
+  inner+=`<div class="conversation-block ${isAr?'arabic-conv':''}">${formatText(conversation)}</div>`;
+  inner+=`<div class="msg-time">${getTime()}</div>`;
+  const avClass=isAr?'arabic-av':isFa?'persian-av':'';
+  row.innerHTML=`<div class="msg-avatar ai ${avClass}">🤖</div><div class="msg-bubble">${inner}</div>`;
+  msgs.appendChild(row); scrollBottom();
+}
+
+function formatFeedback(t){ return t.replace(/[""]([^""]+)[""]/g,'<span class="vocab-pill">$1</span>').replace(/\n/g,'<br>'); }
+function formatText(t){ return escapeHtml(t).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n/g,'<br>'); }
+function escapeHtml(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function showTyping(){
+  const msgs=document.getElementById('chatMessages');
+  const el=document.createElement('div');
+  el.id='typingIndicator'; el.className='typing-indicator';
+  el.innerHTML=`<div class="msg-avatar ai">🤖</div><div class="typing-bubble"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+  msgs.appendChild(el); scrollBottom();
+}
+function removeTyping(){ const el=document.getElementById('typingIndicator'); if(el)el.remove(); }
+function scrollBottom(){ const m=document.getElementById('chatMessages'); m.scrollTop=m.scrollHeight; }
+
+// ══════════════════════════════════════════
+//  TTS / VOICE
+// ══════════════════════════════════════════
+function toggleTTS(){
+  S.ttsEnabled=!S.ttsEnabled;
+  const btn=document.getElementById('ttsToggleBtn');
+  if(S.ttsEnabled){btn.textContent='🔊';btn.style.background='rgba(251,191,36,.25)';showToast('🔊 آواز چالو');}
+  else{btn.textContent='🔇';btn.style.background='rgba(255,255,255,.1)';stopSpeaking();showToast('🔇 آواز بند');}
+}
+
+function getVoiceLang(){
+  if(S.language==='arabic') return S.dialect||'ar-SA';
+  if(S.language==='persian') return 'fa-IR';
+  return S.dialect||'en-GB';
+}
+
+function speakText(text, forcePlay=false){
+  if(!forcePlay && !S.ttsEnabled) return;
+  if(!window.speechSynthesis) return;
+  stopSpeaking();
+  const clean=text
+    .replace(/\[SMART FEEDBACK\].*?(?=\[CONVERSATION|$)/is,'')
+    .replace(/\[تقييم ذكي\].*?(?=\[المحادثة|$)/is,'')
+    .replace(/\[CONVERSATION[^\]]*\]/gi,'').replace(/\[المحادثة[^\]]*\]/gi,'')
+    .replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1').trim();
+  if(!clean) return;
+  const utter=new SpeechSynthesisUtterance(clean);
+  const langCode=getVoiceLang();
+  utter.lang=langCode;
+  // Speed
+  const vt=S.voiceType;
+  utter.rate = vt==='slow-female'?0.65:vt==='fast-male'?1.4:vt==='child'?1.1:S.voiceSpeed;
+  utter.pitch = vt==='child'?1.6:vt==='deep-male'?0.6:vt==='normal-female'||vt==='slow-female'?1.2:0.9;
+  utter.volume=1.0;
+
+  // Voice selection
+  const voices=window.speechSynthesis.getVoices();
+  const langPrefix=langCode.split('-')[0];
+  const genderPref=(vt.includes('female'))?'female':(vt.includes('male')||vt==='deep-male')?'male':'any';
+  const matching=voices.filter(v=>v.lang.startsWith(langPrefix));
+  if(matching.length>0){
+    let picked=matching[0];
+    if(genderPref!=='any'){
+      const g=matching.filter(v=>v.name.toLowerCase().includes(genderPref)||v.name.toLowerCase().includes(genderPref==='female'?'samantha':'daniel'));
+      if(g.length>0) picked=g[0];
+    }
+    utter.voice=picked;
+  }
+  S.currentUtterance=utter;
+  const bar=document.getElementById('speakingBar');
+  if(bar) bar.style.display='flex';
+  utter.onend=()=>{if(bar)bar.style.display='none';S.currentUtterance=null;if(S.isVoiceConvMode&&!S.isListening)setTimeout(()=>{if(S.isVoiceConvMode)startVoiceMic();},600);};
+  utter.onerror=()=>{if(bar)bar.style.display='none';S.currentUtterance=null;};
+  window.speechSynthesis.speak(utter);
+}
+
+function stopSpeaking(){
+  if(window.speechSynthesis) window.speechSynthesis.cancel();
+  const bar=document.getElementById('speakingBar');
+  if(bar) bar.style.display='none';
+  S.currentUtterance=null;
+}
+
+// ══════════════════════════════════════════
+//  SPEECH RECOGNITION
+// ══════════════════════════════════════════
+function initSpeech(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){document.getElementById('micBtn').style.display='none';return;}
+  const r=new SR();
+  r.continuous=false; r.interimResults=false;
+  r.onresult=(e)=>{
+    const t=e.results[0][0].transcript;
+    const inp=document.getElementById('msgInput');
+    inp.value=t; autoResize(inp); stopMicUI();
+    if(S.isVoiceConvMode&&t.trim()) setTimeout(()=>sendMessage(),300);
+  };
+  r.onerror=()=>stopMicUI(); r.onend=()=>stopMicUI();
+  S.recognition=r;
+}
+function toggleMic(){
+  if(!S.recognition){showToast('Voice not supported on this browser');return;}
+  if(S.isListening){S.recognition.stop();stopMicUI();}
+  else{S.recognition.lang=getVoiceLang();S.recognition.start();S.isListening=true;document.getElementById('micBtn').classList.add('listening');}
+}
+function stopMic(){ if(S.recognition&&S.isListening)S.recognition.stop(); stopMicUI(); }
+function stopMicUI(){ S.isListening=false; const b=document.getElementById('micBtn'); if(b)b.classList.remove('listening'); }
+function toggleVoiceConversation(){
+  S.isVoiceConvMode=!S.isVoiceConvMode;
+  const btn=document.getElementById('voiceConvBtn');
+  if(S.isVoiceConvMode){
+    if(!S.ttsEnabled){S.ttsEnabled=true;const tb=document.getElementById('ttsToggleBtn');tb.textContent='🔊';tb.style.background='rgba(251,191,36,.25)';}
+    btn.style.background='#ef4444';btn.style.border='1.5px solid #dc2626';btn.style.color='white';btn.innerHTML='🛑';
+    showToast('🎙️ آواز والی بات چیت شروع');startVoiceMic();
+  } else {
+    btn.style.background='var(--sl-100)';btn.style.border='1.5px solid var(--sl-200)';btn.style.color='';btn.innerHTML='🎙️';
+    stopMic();stopSpeaking();showToast('آواز والی بات چیت بند');
+  }
+}
+function startVoiceMic(){
+  if(!S.recognition||!S.isVoiceConvMode) return;
+  if(S.isListening||S.isLoading) return;
+  S.recognition.lang=getVoiceLang();
+  try{S.recognition.start();S.isListening=true;document.getElementById('micBtn').classList.add('listening');}catch(e){}
+}
+
+// ══════════════════════════════════════════
+//  VOCAB
+// ══════════════════════════════════════════
+function loadVocab(){
+  const words=VOCAB_DATA[S.language]||VOCAB_DATA.english;
+  // Rotate based on day of year
+  const doy=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/86400000);
+  const start=(doy*3)%words.length;
+  S.vocabWords=[];
+  for(let i=0;i<Math.min(5,words.length);i++) S.vocabWords.push(words[(start+i)%words.length]);
+
+  const hdr=document.getElementById('vocabHeader');
+  if(hdr){ ['ar','fa'].forEach(c=>hdr.classList.remove(c)); if(S.language==='arabic')hdr.classList.add('ar'); else if(S.language==='persian')hdr.classList.add('fa'); }
+  document.getElementById('vocabDate').textContent=new Date().toLocaleDateString('en-PK',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('vocabSubtitle').textContent=S.language==='arabic'?'مفردات اليوم':S.language==='persian'?'لغات امروز':'روزانہ کے نئے الفاظ';
+
+  const container=document.getElementById('vocabCards');
+  container.innerHTML='';
+  S.vocabWords.forEach(w=>{
+    const isAr=S.language==='arabic';
+    const card=document.createElement('div');
+    card.className='vocab-word-card';
+    card.innerHTML=`
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;">
+        <div class="vocab-word-main${isAr?' arabic':''}">${w.word}</div>
+        <button class="vocab-play-btn" onclick="speakText('${escapeAttr(w.word)}',true)">🔊</button>
+      </div>
+      ${w.ipa?`<div style="font-size:11px;color:var(--sl-400);margin-bottom:7px;">/${w.ipa}/</div>`:''}
+      <div class="vocab-word-trans">
+        <div class="vocab-trans-row"><span class="vocab-trans-lang">اردو</span><span class="vocab-trans-text">${w.urdu}</span></div>
+        <div class="vocab-trans-row"><span class="vocab-trans-lang">EN</span><span class="vocab-trans-text">${w.en}</span></div>
+        ${w.ar?`<div class="vocab-trans-row"><span class="vocab-trans-lang">عربی</span><span class="vocab-trans-text arabic" style="font-family:var(--font-arabic);direction:rtl;font-size:14px;">${w.ar}</span></div>`:''}
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+// ══════════════════════════════════════════
+//  TESTS
+// ══════════════════════════════════════════
+function startVocabTest(){
+  const words=VOCAB_DATA[S.language]||VOCAB_DATA.english;
+  S.testWords=[...words].sort(()=>Math.random()-.5).slice(0,5);
+  S.testIndex=0; S.testScore=0; S.testMode='vocab';
+  renderVocabQuestion();
+}
+
+function renderVocabQuestion(){
+  const area=document.getElementById('testArea');
+  if(S.testIndex>=S.testWords.length){ showTestScore(); return; }
+  const w=S.testWords[S.testIndex];
+  const isAr=S.language==='arabic';
+  // Build 4 options: correct + 3 wrong
+  const allWords=VOCAB_DATA[S.language]||VOCAB_DATA.english;
+  const wrong=allWords.filter(x=>x.word!==w.word).sort(()=>Math.random()-.5).slice(0,3);
+  const options=[w,...wrong].sort(()=>Math.random()-.5);
+  area.innerHTML=`
+    <div class="test-card">
+      <div class="test-q-label">Question ${S.testIndex+1} of ${S.testWords.length}</div>
+      <div class="test-question${isAr?' arabic':''}">"${w.urdu}" — ترجمہ کریں</div>
+      <div class="test-options">
+        ${options.map(o=>`<button class="test-option" onclick="answerVocab(this,'${escapeAttr(o.word)}','${escapeAttr(w.word)}')">${o.word}</button>`).join('')}
+      </div>
+    </div>`;
+}
+
+function answerVocab(btn, chosen, correct){
+  const allBtns=btn.closest('.test-options').querySelectorAll('.test-option');
+  allBtns.forEach(b=>b.disabled=true);
+  if(chosen===correct){btn.classList.add('correct');S.testScore++;}
+  else{
+    btn.classList.add('wrong');
+    allBtns.forEach(b=>{ if(b.textContent.trim()===correct) b.classList.add('correct'); });
+  }
+  const area=document.getElementById('testArea');
+  const nextBtn=document.createElement('button');
+  nextBtn.className='test-next-btn'; nextBtn.style.marginTop='12px';
+  nextBtn.textContent=S.testIndex+1<S.testWords.length?'Next →':'See Results';
+  nextBtn.onclick=()=>{S.testIndex++;renderVocabQuestion();};
+  area.querySelector('.test-card').appendChild(nextBtn);
+}
+
+function showTestScore(){
+  const area=document.getElementById('testArea');
+  const pct=Math.round((S.testScore/S.testWords.length)*100);
+  const emoji=pct>=80?'🏆':pct>=60?'👍':'💪';
+  area.innerHTML=`
+    <div class="test-card" style="text-align:center;">
+      <div style="font-size:36px;margin-bottom:10px;">${emoji}</div>
+      <div class="test-score"><div><div class="score-num">${S.testScore}/${S.testWords.length}</div><div class="score-label">Correct</div></div><div><div class="score-num">${pct}%</div><div class="score-label">Score</div></div></div>
+      <div style="font-size:13px;color:var(--sl-600);margin:12px 0;">${pct>=80?'شاباش! بہت اچھا':pct>=60?'اچھا! مزید کوشش کریں':'مشق جاری رکھیں'}</div>
+      <button class="test-next-btn" onclick="startVocabTest()">🔄 Try Again</button>
+    </div>`;
+}
+
+function startPronunTest(){
+  const words=VOCAB_DATA[S.language]||VOCAB_DATA.english;
+  const w=words[Math.floor(Math.random()*words.length)];
+  const area=document.getElementById('testArea');
+  const isAr=S.language==='arabic';
+  area.innerHTML=`
+    <div class="test-card">
+      <div class="test-q-label">Pronunciation Test · تلفظ ٹیسٹ</div>
+      <div class="test-question${isAr?' arabic':''}">${w.word}</div>
+      <div style="font-size:11px;color:var(--sl-400);margin-bottom:12px;">${w.urdu} · ${w.en}</div>
+      <button onclick="speakText('${escapeAttr(w.word)}',true)" style="width:100%;padding:11px;background:var(--sl-100);border:none;border-radius:10px;font-size:13px;cursor:pointer;margin-bottom:10px;">🔊 Listen First</button>
+      <div class="pronun-record-area" id="pronunArea" onclick="startPronunRecord('${escapeAttr(w.word)}')">
+        <div class="pronun-mic">🎤</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Tap to Record</div>
+        <div class="pronun-hint">بول کر تلفظ کریں</div>
+      </div>
+      <div id="pronunResult" style="margin-top:10px;display:none;"></div>
+      <button class="test-next-btn" style="margin-top:10px;" onclick="startPronunTest()">🔄 Next Word</button>
+    </div>`;
+}
+
+function startPronunRecord(word){
+  const area=document.getElementById('pronunArea');
+  area.classList.add('active');
+  area.innerHTML='<div class="pronun-mic" style="animation:pulse-dot .8s infinite;">🔴</div><div style="font-size:13px;font-weight:600;">Recording...</div>';
+  if(!S.recognition){showToast('Voice not supported');area.classList.remove('active');return;}
+  S.recognition.lang=getVoiceLang();
+  S.recognition.onresult=(e)=>{
+    const said=e.results[0][0].transcript.trim().toLowerCase();
+    const target=word.toLowerCase();
+    const conf=e.results[0][0].confidence||0.5;
+    area.classList.remove('active');
+    area.innerHTML=`<div class="pronun-mic">✅</div><div style="font-size:12px;color:var(--sl-600);">You said: "${e.results[0][0].transcript}"</div>`;
+    const match=said.includes(target.substring(0,Math.min(4,target.length)))||conf>0.7;
+    document.getElementById('pronunResult').style.display='block';
+    document.getElementById('pronunResult').innerHTML=`<div style="padding:10px;border-radius:9px;background:${match?'var(--em-50)':'#fef2f2'};border:1px solid ${match?'var(--em-100)':'#fee2e2'};font-size:13px;color:${match?'var(--em-700)':'#dc2626'};text-align:center;font-weight:600;">${match?'✅ Excellent! تلفظ صحیح ہے':'⚠️ Try again — دوبارہ کوشش کریں'}</div>`;
+    stopMicUI();
+    S.recognition.onresult=null;
+    S.recognition.onerror=()=>stopMicUI();
+    S.recognition.onend=()=>stopMicUI();
+    initSpeech();
+  };
+  S.recognition.onerror=()=>{area.classList.remove('active');stopMicUI();};
+  S.recognition.onend=()=>stopMicUI();
+  try{S.recognition.start();S.isListening=true;}catch(e){area.classList.remove('active');}
+}
+
+// ══════════════════════════════════════════
+//  WORDLIST
+// ══════════════════════════════════════════
+function buildTopicChips(){
+  const container=document.getElementById('topicChips');
+  container.innerHTML='';
+  Object.entries(TOPICS).forEach(([key,topic])=>{
+    const btn=document.createElement('button');
+    btn.className='topic-chip';
+    btn.textContent=topic.label;
+    btn.dataset.topicKey=key;
+    btn.onclick=()=>{
+      document.querySelectorAll('.topic-chip').forEach(c=>c.classList.remove('active'));
+      btn.classList.add('active');
+      renderWordlist(key);
+    };
+    container.appendChild(btn);
+  });
+}
+
+function filterWordlist(query){
+  if(!query){renderWordlist(null);return;}
+  const q=query.toLowerCase();
+  const rows=document.getElementById('wordlistRows');
+  rows.innerHTML='';
+  Object.entries(TOPICS).forEach(([key,topic])=>{
+    topic.words.filter(w=>w.urdu.includes(query)||w.en.toLowerCase().includes(q)||w.target.includes(query)||w.fa.includes(query)).forEach(w=>{
+      rows.appendChild(buildWordRow(w));
+    });
+  });
+}
+
+function renderWordlist(topicKey){
+  const rows=document.getElementById('wordlistRows');
+  rows.innerHTML='';
+  const isAr=S.language==='arabic', isFa=S.language==='persian';
+  if(topicKey){
+    const t=TOPICS[topicKey];
+    if(t) t.words.forEach(w=>rows.appendChild(buildWordRow(w)));
+  } else {
+    Object.values(TOPICS).forEach(t=>t.words.forEach(w=>rows.appendChild(buildWordRow(w))));
+  }
+}
+
+function buildWordRow(w){
+  const isAr=S.language==='arabic', isFa=S.language==='persian';
+  const targetText=isAr?w.target:isFa?w.fa:w.en;
+  const div=document.createElement('div');
+  div.className='wordlist-row';
+  div.innerHTML=`
+    <div class="wordlist-cell ${isAr||isFa?'arabic english':''}">${targetText}</div>
+    <div class="wordlist-cell urdu">${w.urdu}</div>
+    <div class="wordlist-cell english">${w.en}</div>
+    <button class="wordlist-play-btn" onclick="speakText('${escapeAttr(targetText)}',true)">🔊</button>`;
+  return div;
+}
+
+// ══════════════════════════════════════════
+//  TRANSLATE
+// ══════════════════════════════════════════
+async function doTranslate(){
+  const input=document.getElementById('translateInput').value.trim();
+  if(!input){showToast('کچھ لکھیں پہلے');return;}
+  if(S.apiKeys.length===0){showToast('API key درکار ہے');return;}
+  const btn=document.querySelector('.translate-btn');
+  btn.textContent='Translating...'; btn.disabled=true;
+  const isAr=S.language==='arabic', isFa=S.language==='persian';
+  const l1Label=S.dialect==='en-US'?'English (US)':'English (UK)';
+  const l2Label=isAr?'Arabic · عربی':isFa?'Persian · فارسی':'Arabic · عربی';
+  document.getElementById('tr-lang1-label').textContent=l1Label;
+  document.getElementById('tr-lang2-label').textContent=l2Label;
+
+  const prompt=`Translate this Urdu text to:
+1. English (${S.dialect==='en-US'?'American':'British'} English)
+2. ${isAr?'Arabic (with full harakat/diacritics, Classical)':isFa?'Persian (standard Farsi)':'Arabic (with full harakat/diacritics)'}
+
+Urdu text: "${input}"
+
+Respond ONLY in this exact JSON format (no markdown):
+{"english":"...","target":"..."}`;
+
+  try{
+    const data=await geminiRequest({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:0.3,maxOutputTokens:300}});
+    let txt=data.candidates?.[0]?.content?.parts?.[0]?.text||'{}';
+    txt=txt.replace(/```json|```/g,'').trim();
+    const parsed=JSON.parse(txt);
+    S.currentTranslations=parsed;
+    document.getElementById('tr-lang1').textContent=parsed.english||'';
+    document.getElementById('tr-lang2').textContent=parsed.target||'';
+    document.getElementById('tr-lang2').className='translate-result-text'+(isAr||isFa?' arabic':'');
+    document.getElementById('translateResult').style.display='block';
+  } catch(e){showToast('Translation error: '+e.message.substring(0,40));}
+  finally{btn.textContent='🌐 Translate & Pronounce';btn.disabled=false;}
+}
+
+function speakTranslation(which){
+  const text=which===1?S.currentTranslations.english:S.currentTranslations.target;
+  if(!text){showToast('ترجمہ پہلے کریں');return;}
+  const isAr=S.language==='arabic', isFa=S.language==='persian';
+  const langCode=which===1?(S.dialect||'en-GB'):(isAr?'ar-SA':isFa?'fa-IR':'ar-SA');
+  speakScenarioPhrase(text,langCode);
+}
+
+// ══════════════════════════════════════════
+//  SCENARIOS
+// ══════════════════════════════════════════
+function buildScenarioGrid(){
+  const grid=document.getElementById('scenarioGrid');
+  grid.innerHTML='';
+  Object.entries(SCENARIOS).forEach(([key,sc])=>{
+    const card=document.createElement('div');
+    card.className='scenario-card';
+    card.innerHTML=`<div class="scenario-icon">${sc.icon}</div><div class="scenario-name">${sc.name}</div><div class="scenario-sub">${sc.sub}</div>`;
+    card.onclick=()=>showScenario(key);
+    grid.appendChild(card);
+  });
+  document.getElementById('scenarioDetail').style.display='none';
+  document.getElementById('scenarioDetail').classList.remove('active');
+}
+
+function showScenario(key){
+  const sc=SCENARIOS[key];
+  if(!sc) return;
+  const isAr=S.language==='arabic', isFa=S.language==='persian';
+  const detail=document.getElementById('scenarioDetail');
+
+  // Header
+  let html=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+    <div style="font-size:22px;">${sc.icon}</div>
+    <div>
+      <div style="font-size:14px;font-weight:700;color:var(--sl-800);">${sc.name}</div>
+      <div style="font-size:11px;color:var(--sl-400);">${sc.sub}</div>
+    </div>
+    <button onclick="buildScenarioGrid()" style="margin-left:auto;background:var(--sl-100);border:none;border-radius:8px;width:30px;height:30px;font-size:14px;cursor:pointer;color:var(--sl-600);display:flex;align-items:center;justify-content:center;">✕</button>
+  </div>`;
+
+  sc.phrases.forEach((p, idx)=>{
+    // Primary spoken phrase based on current language
+    const primaryText = isAr ? p.ar : isFa ? p.fa : p.target;
+    const primaryLang = isAr ? 'ar-SA' : isFa ? 'fa-IR' : (S.dialect||'en-GB');
+    const isRTL = isAr || isFa;
+
+    html+=`
+    <div style="background:var(--white);border:1px solid var(--sl-200);border-radius:12px;padding:12px 13px;margin-bottom:8px;box-shadow:var(--sh-sm);">
+
+      <!-- Primary phrase (in selected language) -->
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;">
+        <div style="flex:1;">
+          <div style="font-size:10px;font-weight:700;color:var(--sl-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">
+            ${isAr?'🇸🇦 العربية':isFa?'🇮🇷 فارسی':'🇬🇧 English'}
+          </div>
+          <div style="font-size:${isRTL?'17px':'15px'};font-weight:600;color:var(--sl-800);${isRTL?'font-family:var(--font-arabic);direction:rtl;line-height:2;':''}">
+            ${primaryText}
+          </div>
+        </div>
+        <button onclick="speakScenarioPhrase('${escapeAttr(primaryText)}','${primaryLang}')"
+          style="background:var(--em-50);border:1px solid var(--em-100);border-radius:8px;padding:7px 10px;font-size:14px;cursor:pointer;flex-shrink:0;transition:background .2s;"
+          onmouseover="this.style.background='var(--em-100)'" onmouseout="this.style.background='var(--em-50)'">🔊</button>
+      </div>
+
+      <!-- Urdu meaning -->
+      <div style="font-family:var(--font-arabic);direction:rtl;font-size:13px;color:var(--sl-500);margin-bottom:6px;padding-bottom:6px;border-bottom:1px dashed var(--sl-200);">
+        اردو: ${p.urdu}
+      </div>
+
+      <!-- All three languages row -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
+        ${!isAr ? `<div style="flex:1;min-width:100px;background:var(--tl-50);border-radius:8px;padding:6px 8px;cursor:pointer;"
+          onclick="speakScenarioPhrase('${escapeAttr(p.ar)}','ar-SA')">
+          <div style="font-size:9px;font-weight:700;color:var(--tl-700);margin-bottom:2px;">🔊 عربی</div>
+          <div style="font-family:var(--font-arabic);direction:rtl;font-size:13px;color:var(--sl-800);line-height:1.8;">${p.ar}</div>
+        </div>` : ''}
+        ${!isFa ? `<div style="flex:1;min-width:100px;background:var(--pr-50);border-radius:8px;padding:6px 8px;cursor:pointer;"
+          onclick="speakScenarioPhrase('${escapeAttr(p.fa)}','fa-IR')">
+          <div style="font-size:9px;font-weight:700;color:var(--pr-700);margin-bottom:2px;">🔊 فارسی</div>
+          <div style="font-family:var(--font-arabic);direction:rtl;font-size:13px;color:var(--sl-800);line-height:1.8;">${p.fa}</div>
+        </div>` : ''}
+        ${!isAr && !isFa ? '' : `<div style="flex:1;min-width:100px;background:var(--em-50);border-radius:8px;padding:6px 8px;cursor:pointer;"
+          onclick="speakScenarioPhrase('${escapeAttr(p.target)}','${S.dialect||'en-GB'}')">
+          <div style="font-size:9px;font-weight:700;color:var(--em-700);margin-bottom:2px;">🔊 English</div>
+          <div style="font-size:12px;color:var(--sl-800);">${p.target}</div>
+        </div>`}
+      </div>
+
+      <!-- Send to chat button -->
+      <button onclick="sendScenarioToChat('${escapeAttr(primaryText)}')"
+        style="margin-top:8px;width:100%;padding:7px;background:none;border:1px solid var(--sl-200);border-radius:8px;font-size:11px;color:var(--sl-500);cursor:pointer;transition:all .2s;"
+        onmouseover="this.style.background='var(--sl-100)'" onmouseout="this.style.background='none'">
+        💬 Practice this phrase in Chat
+      </button>
+    </div>`;
+  });
+
+  detail.innerHTML=html;
+  detail.style.display='block';
+  detail.classList.add('active');
+  setTimeout(()=>detail.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+}
+
+// Speak a phrase with a specific language code (bypassing global language state)
+function speakScenarioPhrase(text, langCode){
+  if(!window.speechSynthesis) return;
+  stopSpeaking();
+  if(!text) return;
+  const utter=new SpeechSynthesisUtterance(text);
+  utter.lang=langCode;
+  utter.rate=S.voiceSpeed||0.9;
+  utter.pitch=1.0; utter.volume=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const prefix=langCode.split('-')[0];
+  const match=voices.filter(v=>v.lang.startsWith(prefix));
+  if(match.length>0) utter.voice=match[0];
+  S.currentUtterance=utter;
+  const bar=document.getElementById('speakingBar');
+  if(bar) bar.style.display='flex';
+  utter.onend=()=>{if(bar)bar.style.display='none';S.currentUtterance=null;};
+  utter.onerror=()=>{if(bar)bar.style.display='none';S.currentUtterance=null;};
+  window.speechSynthesis.speak(utter);
+}
+
+// Send a scenario phrase to the chat tab for practice
+function sendScenarioToChat(text){
+  switchTab('chat');
+  const inp=document.getElementById('msgInput');
+  if(inp){
+    inp.value=text;
+    autoResize(inp);
+    inp.focus();
+    showToast('💬 چیٹ میں جائیں اور send کریں');
+  }
+}
+
+// ══════════════════════════════════════════
+//  MODAL
+// ══════════════════════════════════════════
+function openModal(){ document.getElementById('modalOverlay').classList.add('open'); }
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); }
+function closeModalOutside(e){ if(e.target===document.getElementById('modalOverlay'))closeModal(); }
+function switchModalTab(name,btn){
+  document.querySelectorAll('.modal-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.modal-tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+}
+
+// ══════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+function escapeAttr(s){ return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+
+// ══════════════════════════════════════════
+//  PWA — service worker + خودکار اپڈیٹ
+// ══════════════════════════════════════════
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').then(reg=>{
+      const offer=w=>{
+        if(document.getElementById('updBanner')) return;
+        const b=document.createElement('div'); b.id='updBanner';
+        b.style.cssText='position:fixed;left:12px;right:12px;bottom:76px;z-index:9999;background:var(--em-900);color:#fff;border-radius:14px;padding:11px 14px;display:flex;align-items:center;gap:10px;box-shadow:var(--sh-lg);font-size:13px;direction:rtl;font-family:var(--font-arabic);';
+        b.innerHTML='<span style="flex:1;">🔄 ایپ کا نیا ورژن دستیاب ہے</span><button style="background:var(--am-400);color:#022c22;border:none;border-radius:9px;padding:7px 14px;font-weight:700;cursor:pointer;font-family:inherit;">اپڈیٹ کریں</button>';
+        b.querySelector('button').onclick=()=>w.postMessage('SKIP_WAITING');
+        document.body.appendChild(b);
+      };
+      if(reg.waiting&&navigator.serviceWorker.controller) offer(reg.waiting);
+      reg.addEventListener('updatefound',()=>{
+        const w=reg.installing;
+        w.addEventListener('statechange',()=>{ if(w.state==='installed'&&navigator.serviceWorker.controller) offer(w); });
+      });
+      // ایپ کھلنے/واپس آنے پر نیا ورژن چیک کریں
+      document.addEventListener('visibilitychange',()=>{ if(!document.hidden) reg.update().catch(()=>{}); });
+    }).catch(()=>{});
+    let reloaded=false;
+    navigator.serviceWorker.addEventListener('controllerchange',()=>{ if(reloaded) return; reloaded=true; location.reload(); });
+  });
+}
+</script>
+</body>
+</html>
